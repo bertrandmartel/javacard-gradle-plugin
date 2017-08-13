@@ -46,46 +46,121 @@ class JavaCardTask extends DefaultTask {
         //get location of ant-javacard task jar
         def loc = new File(pro.javacard.ant.JavaCard.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
 
-        logger.info('javacard task location : ' + loc)
+        logger.debug('javacard task location : ' + loc)
 
         ant.taskdef(name: 'javacard',
                 classname: 'pro.javacard.ant.JavaCard',
                 classpath: loc.absolutePath)
 
-        ant.javacard(jckit: project.javacard.jckit) {
+        ant.javacard(buildJavacardMap(project.javacard.jckit)) {
 
             project.javacard.caps.each() { capItem ->
 
                 updateOutputFilePath(capItem)
 
-                cap(
-                        jckit: capItem.jckit,
-                        sources: capItem.sources,
-                        package: capItem.packageName,
-                        version: capItem.version,
-                        aid: capItem.aid,
-                        output: capItem.output,
-                        export: capItem.export,
-                        jca: capItem.jca,
-                        verify: capItem.verify,
-                        debug: capItem.debug,
-                        ints: capItem.ints
-                ) {
+                cap(buildCapMap(capItem)) {
                     capItem.applets.each() { appletItem ->
-                        applet(
-                                class: appletItem.className,
-                                aid: appletItem.aid
-                        )
+                        applet(buildAppletMap(appletItem))
                     }
                     capItem.imports.each() { importItem ->
-                        "import"(
-                                exps: importItem.exps,
-                                jar: importItem.jar
-                        )
+                        "import"(buildImportItem(importItem))
                     }
                 }
             }
         }
+    }
+
+    /**
+     * build cap attribute map
+     *
+     * @param capItem cap item
+     * @return map of cap attributes
+     */
+    def buildCapMap(capItem) {
+        def map = [:]
+        if (capItem.jckit?.trim()) {
+            map["jckit"] = capItem.jckit
+        }
+        if (capItem.sources?.trim()) {
+            map["sources"] = capItem.sources
+        }
+        if (capItem.classes?.trim()) {
+            map["classes"] = capItem.classes
+        }
+        if (capItem.packageName?.trim()) {
+            map["package"] = capItem.packageName
+        }
+        if (capItem.version?.trim()) {
+            map["version"] = capItem.version
+        }
+        if (capItem.aid?.trim()) {
+            map["aid"] = capItem.aid
+        }
+        if (capItem.output?.trim()) {
+            map["output"] = capItem.output
+        }
+        if (capItem.export?.trim()) {
+            map["export"] = capItem.export
+        }
+        if (capItem.jca?.trim()) {
+            map["jca"] = capItem.jca
+        }
+        map["verify"] = capItem.verify
+        map["ints"] = capItem.ints
+        map["debug"] = capItem.debug
+        logger.debug("cap attributes : " + map)
+        return map
+    }
+
+    /**
+     * build javacard attribute map.
+     *
+     * @param jckit jckit
+     * @return map of javacard attributes
+     */
+    def buildJavacardMap(jckit) {
+        def map = [:]
+        if (jckit?.trim()) {
+            map["jckit"] = jckit
+        }
+        logger.debug("javacard attributes : " + map)
+        return map
+    }
+
+    /**
+     * Build applet attribute map.
+     *
+     * @param appletItem applet item
+     * @return map of applet attributes
+     */
+    def buildAppletMap(appletItem) {
+        def map = [:]
+        if (appletItem.className?.trim()) {
+            map["class"] = appletItem.className
+        }
+        if (appletItem.aid?.trim()) {
+            map["aid"] = appletItem.aid
+        }
+        logger.debug("applet attributes : " + map)
+        return map
+    }
+
+    /**
+     * Build import attributes map.
+     *
+     * @param importItem import item
+     * @return map of import attributes
+     */
+    def buildImportItem(importItem) {
+        def map = [:]
+        if (importItem.exps?.trim()) {
+            map["exps"] = importItem.exps
+        }
+        if (importItem.jar?.trim()) {
+            map["jar"] = importItem.jar
+        }
+        logger.debug("import attributes : " + map)
+        return map
     }
 
     /**
@@ -97,31 +172,43 @@ class JavaCardTask extends DefaultTask {
 
         if (!capItem.sources?.trim()) {
             capItem.sources = project.sourceSets.main.java.srcDirs[0]
-            logger.info('update source path to ' + capItem.sources)
+            logger.debug('update source path to ' + capItem.sources)
         }
         File file = new File(capItem.output);
         if (!file.isAbsolute()) {
             Utility.createFolder(jcBuildDir)
             if (!capItem.jca?.trim()) {
                 capItem.jca = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".jca"
-                logger.info('update jca path to ' + capItem.jca)
+                logger.debug('update jca path to ' + capItem.jca)
             }
             if (!capItem.export?.trim()) {
                 capItem.export = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".exp"
-                logger.info('update export path to ' + capItem.export)
+                logger.debug('update export path to ' + capItem.export)
             }
             capItem.output = jcBuildDir + "/" + capItem.output
         } else {
             if (!capItem.jca?.trim()) {
-                capItem.jca = jcBuildDir + "/" + Utility.getFileNameWithoutExtension(capItem.output) + ".jca"
-                logger.info('update jca path to ' + capItem.jca)
+                capItem.jca = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".jca"
+                logger.debug('update jca path to ' + capItem.jca)
                 Utility.createFolder(jcBuildDir)
             }
             if (!capItem.export?.trim()) {
                 capItem.export = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".exp"
-                logger.info('update export path to ' + capItem.export)
+                logger.debug('update export path to ' + capItem.export)
                 Utility.createFolder(jcBuildDir)
             }
+        }
+
+        //update jca & export when non absolute path are referenced
+        File jcaFile = new File(capItem.jca);
+        if (!jcaFile.isAbsolute()) {
+            capItem.jca = jcBuildDir + "/" + capItem.jca
+            logger.debug('update jca path to ' + capItem.jca)
+        }
+        File exportFile = new File(capItem.export);
+        if (!exportFile.isAbsolute()) {
+            capItem.export = jcBuildDir + "/" + capItem.export
+            logger.debug('update export path to ' + capItem.export)
         }
     }
 

@@ -34,12 +34,12 @@ class Applet {
     /**
      * class of the Applet where install() method is defined. Required.
      */
-    String className = ''
+    String className
 
     /**
      * AID (hex) of the applet. Recommended - or set to package aid+i where i is index of the applet definition in the build.xml instruction
      */
-    String aid = ''
+    String aid
 
     void className(String className) {
         this.className = className

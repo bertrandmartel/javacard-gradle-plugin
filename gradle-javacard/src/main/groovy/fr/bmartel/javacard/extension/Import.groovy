@@ -34,12 +34,12 @@ class Import {
     /**
      * path to the folder keeping .exp files. Required
      */
-    String exps = ''
+    String exps
 
     /**
      * path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
      */
-    String jar = ''
+    String jar
 
     void exps(String exps) {
         this.exps = exps

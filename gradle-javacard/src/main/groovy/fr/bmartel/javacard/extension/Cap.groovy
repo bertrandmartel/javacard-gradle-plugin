@@ -34,12 +34,18 @@ class Cap {
     /**
      * path to the JavaCard SDK to be used for this CAP. Optional if javacard defines one, required otherwise.
      */
-    String jckit = ''
+    String jckit
 
     /**
      * path to Java source code, to be compiled against the current JavaCard SDK. Either sources or classes is required.
      */
     String sources
+
+    /**
+     * path to pre-compiled class files to be assembled into a CAP file. If both classes and sources are specified,
+     * compiled class files will be put to classes folder, which is created if missing.
+     */
+    String classes
 
     /**
      * name of the package of the CAP file. Optional - set to the parent package of the applet class if left unspecified.
