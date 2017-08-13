@@ -5,7 +5,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.bmartel/gradle-javacard/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.bmartel/gradle-javacard)
 [![Coverage Status](https://coveralls.io/repos/github/bertrandmartel/javacard-gradle-plugin/badge.svg?branch=master)](https://coveralls.io/github/bertrandmartel/javacard-gradle-plugin?branch=master)
 [![Javadoc](http://javadoc-badge.appspot.com/fr.bmartel/gradle-javacard.svg?label=javadoc)](http://javadoc-badge.appspot.com/fr.bmartel/gradle-javacard)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
 
 A Gradle plugin for building JavaCard applets.
 
