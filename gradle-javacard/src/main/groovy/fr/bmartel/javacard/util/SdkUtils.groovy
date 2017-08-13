@@ -13,19 +13,6 @@ class SdkUtils {
 
     public static enum JC {
         NONE, V212, V221, V222, V3;
-
-        @Override
-        public String toString() {
-            if (this.equals(V3))
-                return "v3.x";
-            if (this.equals(V222))
-                return "v2.2.2";
-            if (this.equals(V221))
-                return "v2.2.1";
-            if (this.equals(V212))
-                return "v2.1.x";
-            return "unknown";
-        }
     }
 
     public static class JavaCardKit {

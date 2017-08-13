@@ -43,17 +43,6 @@ class Utility {
     }
 
     /**
-     * Get only the filename and without the extension
-     * https://stackoverflow.com/a/6541137/2614364
-     *
-     * @param file
-     * @return
-     */
-    static String getFileNameWithoutExtension(file) {
-        return file.lastIndexOf('.').with { it != -1 ? file[0..<it] : file }
-    }
-
-    /**
      * Create a folder if not existing.
      *
      * @param folderPath
