@@ -58,6 +58,27 @@ class StaticConfig {
         }
     }
 
+    public static Closure FULL_OUTPUT = {
+        jckit SDK_PATH
+        cap {
+            jckit SDK_PATH
+            packageName 'fr.bmartel.javacard'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:09'
+            output 'applet.cap'
+            export 'other.exp'
+            jca 'someother.jca'
+            applet {
+                className 'fr.bmartel.javacard.HelloSmartcard'
+                aid '01:02:03:04:05:06:07:08:09:01:02'
+            }
+            importResource {
+                jar DEPENDENCY_PATH
+                exps EXP_PATH
+            }
+        }
+    }
+
     public static Closure MULTIPLE_APPLETS = {
         cap {
             jckit SDK_PATH

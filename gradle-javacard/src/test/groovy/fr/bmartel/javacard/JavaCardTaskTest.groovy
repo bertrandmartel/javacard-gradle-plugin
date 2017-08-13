@@ -108,8 +108,16 @@ class JavaCardTaskTest {
     void checkOutputFile(task) {
         task.getJavaCard().caps.each { capItem ->
             assertTrue(getFile(capItem.output).exists())
-            assertTrue(getFile(getFileName(capItem.output, "exp")).exists())
-            assertTrue(getFile(getFileName(capItem.output, "jca")).exists())
+            if (capItem.export?.trim()) {
+                assertTrue(getFile(getFileName(capItem.export, "exp")).exists())
+            } else {
+                assertTrue(getFile(getFileName(capItem.output, "exp")).exists())
+            }
+            if (capItem.jca?.trim()) {
+                assertTrue(getFile(getFileName(capItem.jca, "jca")).exists())
+            } else {
+                assertTrue(getFile(getFileName(capItem.output, "jca")).exists())
+            }
         }
     }
 
@@ -124,6 +132,11 @@ class JavaCardTaskTest {
     }
 
     @Test
+    void validBuildFullOutput() {
+        runTask(StaticConfig.FULL_OUTPUT)
+    }
+
+    @Test
     void multipleCaps() {
         runTask(StaticConfig.MULTIPLE_CAPS)
     }
@@ -134,11 +147,27 @@ class JavaCardTaskTest {
     }
 
     @Test
-    void sdkVersion() {
+    void sdkVersion221() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc221_kit"), "applet"))
+    }
+
+    @Test
+    void sdkVersion222() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc222_kit"), "applet1"))
+    }
+
+    @Test
+    void sdkVersion303() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc303_kit"), "applet2"))
+    }
+
+    @Test
+    void sdkVersion304() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc304_kit"), "applet3"))
+    }
+
+    @Test
+    void sdkVersion305u1() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc305u1_kit"), "applet4"))
     }
 
