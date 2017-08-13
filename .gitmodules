@@ -1,0 +1,3 @@
+[submodule "gradle-javacard/src/main/ant-javacard"]
+	path = gradle-javacard/src/main/ant-javacard
+	url = git@github.com:martinpaljak/ant-javacard.git
