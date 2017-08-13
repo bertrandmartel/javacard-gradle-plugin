@@ -48,6 +48,17 @@ class JavaCardPlugin implements Plugin<Project> {
 
         project.afterEvaluate {
 
+            File propertyFile = project.rootProject.file('local.properties')
+
+            if (propertyFile.exists()) {
+                Properties properties = new Properties()
+                properties.load(propertyFile.newDataInputStream())
+                if (properties.getProperty('jc.home')?.trim()) {
+                    extension.jckit = properties.getProperty('jc.home')
+                }
+            }
+            logger.debug("jckit location : " + extension.getJcKit())
+
             //resolve the javacard framework according to SDK version
             project.dependencies {
                 compile project.files(SdkUtils.getApiPath(extension.getJcKit(), logger))
