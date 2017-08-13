@@ -138,11 +138,13 @@ class JavaCard {
         } else if (jckit?.trim()) {
             return jckit
         } else if (caps.size() > 0) {
+            def kit = ""
             caps.each { capItem ->
                 if (capItem.jckit?.trim()) {
-                    return capItem.jckit
+                    kit = capItem.jckit
                 }
             }
+            return kit
         }
         return ""
     }
