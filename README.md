@@ -26,7 +26,6 @@ buildscript {
 apply plugin: 'javacard'
 
 javacard {
-    jckit "/path/to/oracle_javacard_sdks/jc222_kit"
     cap {
         packageName 'fr.bmartel.javacard'
         version '0.1'
@@ -46,7 +45,9 @@ plugin is available from `jcenter()` or `mavenCentral()`
 
 The path to JavaCard SDK can be specified through : 
 
-* `JC_HOME` environment variable, for instance using : `export JC_HOME="$pwd/sdks/jck222_kit"`
+* *[Recommended]* use `jc.home` properties in `local.properties` file located in your project root (in the same way as Android projects) : 
+  * in project root : `echo "jc.home=$PWD/oracle_javacard_sdks/jc222_kit" >> local.properties`
+* `JC_HOME` global environment variable, for instance using : `export JC_HOME="$PWD/sdks/jck222_kit"`
 * using `jckit` attribute (see [ant-javacard](https://github.com/martinpaljak/ant-javacard#syntax))
 
 ## More complex example
@@ -94,6 +95,7 @@ javacard {
   * cap [Closure] - construct a CAP file **Required**
     * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
     * sources [String] - path to Java source code, to be compiled against the current JavaCard SDK. **Required**
+    * classes [String] - path to pre-compiled class files to be assembled into a CAP file. If both classes and sources are specified, compiled class files will be put to classes folder, which is created if missing
     * packageName [String] - name of the package of the CAP file. Optional - set to the parent package of the applet class if left unspecified.
     * version [String] - version of the package. Optional - defaults to 0.0 if left unspecified.
     * aid [String] - AID (hex) of the package. Recommended - or set to the 5 first bytes of the applet AID if left unspecified.
