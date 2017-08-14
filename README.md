@@ -19,7 +19,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.1.1'
+        classpath 'fr.bmartel:gradle-javacard:1.1.6'
     }
 }
 
@@ -92,6 +92,7 @@ javacard {
 
 * javacard [Closure]
   * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise
+  * logLevel [String] - log level of ant-javacard task ("VERBOSE","DEBUG","INFO","WARN","ERROR"). default : "INFO"
   * cap [Closure] - construct a CAP file **Required**
     * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
     * sources [String] - path to Java source code, to be compiled against the current JavaCard SDK. **Required**
