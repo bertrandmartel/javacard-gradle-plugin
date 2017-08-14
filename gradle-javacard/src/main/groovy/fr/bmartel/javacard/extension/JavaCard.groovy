@@ -39,6 +39,11 @@ class JavaCard {
     String jckit
 
     /**
+     * log level to set to "VERBOSE","DEBUG","INFO","WARN" or "ERROR", default is "INFO"
+     */
+    String logLevel = 'INFO'
+
+    /**
      * list of cap files to build.
      */
     List<Cap> caps = []
@@ -54,6 +59,10 @@ class JavaCard {
 
     void jckit(String path) {
         this.jckit = path
+    }
+
+    void logLevel(String logLevel) {
+        this.logLevel = logLevel
     }
 
     /**

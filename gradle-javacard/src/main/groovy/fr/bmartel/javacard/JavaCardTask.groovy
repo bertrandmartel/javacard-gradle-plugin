@@ -43,6 +43,8 @@ class JavaCardTask extends DefaultTask {
 
     @TaskAction
     def build() {
+        ant.lifecycleLogLevel = project.javacard.logLevel
+
         //get location of ant-javacard task jar
         def loc = new File(pro.javacard.ant.JavaCard.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
 

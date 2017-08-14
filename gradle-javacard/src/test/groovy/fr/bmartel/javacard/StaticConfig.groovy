@@ -40,6 +40,7 @@ class StaticConfig {
     }
 
     public static Closure VALID_CONFIG = {
+        logLevel "DEBUG"
         jckit SDK_PATH
         cap {
             jckit SDK_PATH
