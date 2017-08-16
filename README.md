@@ -80,7 +80,7 @@ javacard {
             className 'fr.bmartel.javacard.SomeOtherClass'
             aid '01:02:03:04:05:06:07:08:09:01:04'
         }
-        importResource {
+        libs {
             jar '/path/to/dependency.jar'
             exps '/path/to/some.exp'
         }
@@ -109,7 +109,7 @@ javacard {
     * applet [Closure] - for creating an applet inside the CAP
       * className [String] - class of the Applet where install() method is defined. **Required**
       * aid [String] - AID (hex) of the applet. Recommended - or set to package aid+i where i is index of the applet definition in the build.xml instruction
-    * importResource [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
+    * libs [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
       * exps [String] - path to the folder keeping .exp files. Required
       * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
 

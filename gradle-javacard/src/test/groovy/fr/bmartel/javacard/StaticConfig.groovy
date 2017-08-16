@@ -52,7 +52,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -73,7 +73,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -95,7 +95,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard2'
                 aid '01:02:03:04:05:06:07:08:09:01:03'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -113,7 +113,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -128,7 +128,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -145,7 +145,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -163,7 +163,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -180,7 +180,7 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }
@@ -196,7 +196,7 @@ class StaticConfig {
             applet {
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            importResource {
+            libs {
                 jar DEPENDENCY_PATH
                 exps EXP_PATH
             }

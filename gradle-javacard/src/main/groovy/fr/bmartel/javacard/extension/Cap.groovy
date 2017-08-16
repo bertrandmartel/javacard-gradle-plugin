@@ -111,7 +111,7 @@ class Cap {
         someApplet
     }
 
-    Import importResource(Closure closure) {
+    Import libs(Closure closure) {
         def someImport = new Import()
         closure.delegate = someImport
         closure.resolveStrategy = Closure.DELEGATE_FIRST

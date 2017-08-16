@@ -118,7 +118,7 @@ class JavaCardPluginTest {
                     className projectTest.caps.cap1.applets.applet2.className
                     aid projectTest.caps.cap1.applets.applet2.aid
                 }
-                importResource {
+                libs {
                     exps projectTest.caps.cap1.exports.exps
                     jar projectTest.caps.cap1.exports.jar
                 }
