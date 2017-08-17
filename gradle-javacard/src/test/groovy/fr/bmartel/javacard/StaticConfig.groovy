@@ -35,12 +35,17 @@ class StaticConfig {
     public static String DEPENDENCY_PATH = System.getProperty("user.dir") + "/../test/libs/test.jar"
     public static String EXP_PATH = System.getProperty("user.dir") + "/../test/libs/test.exp"
 
+    public static repositories = {
+        maven {
+            url 'http://dl.bintray.com/bertrandmartel/maven'
+        }
+    }
+
     public static String getSdkPath(folder) {
         return System.getProperty("user.dir") + '/src/main/ant-javacard/sdks/' + folder
     }
 
     public static Closure VALID_CONFIG = {
-        logLevel "DEBUG"
         jckit SDK_PATH
         cap {
             jckit SDK_PATH
@@ -52,9 +57,27 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
+                remote 'fr.bmartel:gplatform:1.6'
+            }
+        }
+    }
+
+    public static Closure SIMPLE_CONFIG = {
+        jckit SDK_PATH
+        cap {
+            jckit SDK_PATH
+            packageName 'fr.bmartel.javacard'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:09'
+            output 'applet.cap'
+            applet {
+                className 'fr.bmartel.javacard.HelloSmartcard'
+                aid '01:02:03:04:05:06:07:08:09:01:02'
             }
         }
     }
@@ -73,9 +96,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -95,9 +120,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard2'
                 aid '01:02:03:04:05:06:07:08:09:01:03'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -113,9 +140,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
         cap {
@@ -128,9 +157,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -145,9 +176,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -163,9 +196,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -180,9 +215,11 @@ class StaticConfig {
                 className 'fr.bmartel.javacard.HelloSmartcard'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }
@@ -196,9 +233,11 @@ class StaticConfig {
             applet {
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
-            libs {
-                jar DEPENDENCY_PATH
-                exps EXP_PATH
+            dependencies {
+                local {
+                    jar DEPENDENCY_PATH
+                    exps EXP_PATH
+                }
             }
         }
     }

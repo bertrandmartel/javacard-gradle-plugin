@@ -98,9 +98,9 @@ class Cap {
     List<Applet> applets = []
 
     /**
-     * list of import
+     * dependencies
      */
-    List<Import> imports = []
+    Dependencies dependencies
 
     Applet applet(Closure closure) {
         def someApplet = new Applet()
@@ -111,13 +111,13 @@ class Cap {
         someApplet
     }
 
-    Import libs(Closure closure) {
-        def someImport = new Import()
-        closure.delegate = someImport
+    void dependencies(Closure closure) {
+        def dependency = new Dependencies()
+        closure.delegate = dependency
         closure.resolveStrategy = Closure.DELEGATE_FIRST
         closure.call()
-        imports.add(someImport)
-        someImport
+        dependencies = dependency
+        dependency
     }
 
     void jckit(String path) {

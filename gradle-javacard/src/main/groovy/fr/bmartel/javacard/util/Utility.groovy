@@ -24,6 +24,8 @@
 
 package fr.bmartel.javacard.util
 
+import java.util.zip.ZipFile
+
 /**
  * Some utility functions
  *
@@ -52,5 +54,28 @@ class Utility {
         if (!folder.exists()) {
             folder.mkdirs()
         }
+    }
+
+    /**
+     * Unzip file to directory.
+     *
+     * @param zipFileName
+     * @param outputDir
+     */
+    static void unzip(String zipFileName, String outputDir) {
+        def zip = new ZipFile(new File(zipFileName))
+
+        zip.entries().each {
+            if (!it.isDirectory()) {
+                def fOut = new File(outputDir + File.separator + it.name)
+                new File(fOut.parent).mkdirs()
+                def fos = new FileOutputStream(fOut)
+                def buf = new byte[it.size]
+                def len = zip.getInputStream(it).read(buf)
+                fos.write(buf, 0, len)
+                fos.close()
+            }
+        }
+        zip.close()
     }
 }

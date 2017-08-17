@@ -72,25 +72,27 @@ class JavaCard {
         checkJckit()
         checkOutput()
         checkAppletClass()
-        checkImportExp()
+        checkDependency()
     }
 
     /**
      * Check that an exp is defined for import object nested in cap.
      */
-    def checkImportExp() {
+    def checkDependency() {
         caps.each { capItem ->
-            capItem.imports.each { importItem ->
-                if (!importItem.exps?.trim()) {
-                    throw new InvalidUserDataException('import exp is required')
+            if (capItem.dependencies != null) {
+                capItem.dependencies.local.each { importItem ->
+                    if (!importItem.exps?.trim() || !importItem.jar?.trim()) {
+                        throw new InvalidUserDataException('import exp/jar is required for local dependency')
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Check that a className is defined for each applet nested in cap.
-     */
+/**
+ * Check that a className is defined for each applet nested in cap.
+ */
     def checkAppletClass() {
         caps.each { capItem ->
             capItem.applets.each { appletItem ->
@@ -101,9 +103,9 @@ class JavaCard {
         }
     }
 
-    /**
-     * Check that output field is defined.
-     */
+/**
+ * Check that output field is defined.
+ */
     def checkOutput() {
         caps.each { capItem ->
             if (!capItem.output?.trim()) {
@@ -112,9 +114,9 @@ class JavaCard {
         }
     }
 
-    /**
-     * Check that jckit is defined either in the root javacard object or in all caps object if not in environment variable.
-     */
+/**
+ * Check that jckit is defined either in the root javacard object or in all caps object if not in environment variable.
+ */
     def checkJckit() {
         if (jckit?.trim()) {
             def folder = new File(jckit)
@@ -137,10 +139,10 @@ class JavaCard {
         }
     }
 
-    /**
-     * Get Javacard SDK
-     * @return
-     */
+/**
+ * Get Javacard SDK
+ * @return
+ */
     String getJcKit() {
         if (System.env['JC_HOME']) {
             return System.env['JC_HOME']
@@ -157,4 +159,5 @@ class JavaCard {
         }
         return ""
     }
+
 }

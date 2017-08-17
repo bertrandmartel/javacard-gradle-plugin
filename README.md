@@ -19,7 +19,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.1.6'
+        classpath 'fr.bmartel:gradle-javacard:1.1.81'
     }
 }
 
@@ -55,6 +55,12 @@ The path to JavaCard SDK can be specified through :
 ```groovy
 apply plugin: 'javacard'
 
+repositories {
+    maven {
+        url 'http://dl.bintray.com/bertrandmartel/maven'
+    }
+}
+
 javacard {
     jckit "/path/to/oracle_javacard_sdks/jc222_kit"
     cap {
@@ -80,13 +86,19 @@ javacard {
             className 'fr.bmartel.javacard.SomeOtherClass'
             aid '01:02:03:04:05:06:07:08:09:01:04'
         }
-        libs {
-            jar '/path/to/dependency.jar'
-            exps '/path/to/some.exp'
+        dependencies {
+            local {
+                jar '/path/to/dependency.jar'
+                exps '/path/to/expfolder'
+            }
+            remote 'fr.bmartel:gplatform:1.6'
         }
     }
 }
 ```
+
+Note1 : the `remote` dependency will automatically download the `jar` (the `jar` file must include the `exp` file)  
+Note2 : you can add as many `local` or `remote` dependency as you want
 
 ## Syntax
 
@@ -109,9 +121,11 @@ javacard {
     * applet [Closure] - for creating an applet inside the CAP
       * className [String] - class of the Applet where install() method is defined. **Required**
       * aid [String] - AID (hex) of the applet. Recommended - or set to package aid+i where i is index of the applet definition in the build.xml instruction
-    * libs [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
-      * exps [String] - path to the folder keeping .exp files. Required
-      * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
+    * dependencies [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
+      * local [Closure] local dependencies must include absolute path to exp/jar
+        * exps [String] - path to the folder keeping .exp files. Required
+        * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
+      * remote [String] remote dependencies (ex: "group:module:1.0").the remote repository (maven repo) must be included in the project
 
 ## License
 

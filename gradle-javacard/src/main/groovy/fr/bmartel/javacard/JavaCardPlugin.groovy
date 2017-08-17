@@ -64,6 +64,18 @@ class JavaCardPlugin implements Plugin<Project> {
                 compile project.files(SdkUtils.getApiPath(extension.getJcKit(), logger))
             }
 
+            extension.caps.each { capItem ->
+
+                if (capItem.dependencies != null) {
+                    capItem.dependencies.local.each { localItem ->
+                        project.dependencies.add("compile", project.files(localItem.jar))
+                    }
+                    capItem.dependencies.remote.each { remoteItem ->
+                        project.dependencies.add("compile", remoteItem)
+                    }
+                }
+            }
+
             //validate the extension properties
             extension.validate()
         }

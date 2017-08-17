@@ -24,6 +24,7 @@
 
 package fr.bmartel.javacard
 
+import com.sun.media.sound.InvalidDataException
 import fr.bmartel.javacard.extension.JavaCard
 import fr.bmartel.javacard.util.Utility
 import org.gradle.api.DefaultTask
@@ -61,11 +62,19 @@ class JavaCardTask extends DefaultTask {
                 updateOutputFilePath(capItem)
 
                 cap(buildCapMap(capItem)) {
+
                     capItem.applets.each() { appletItem ->
                         applet(buildAppletMap(appletItem))
                     }
-                    capItem.imports.each() { importItem ->
-                        "import"(buildImportItem(importItem))
+
+                    if (capItem.dependencies != null) {
+                        capItem.dependencies.local.each() { localItem ->
+                            "import"(buildLocalItem(localItem))
+                        }
+
+                        capItem.dependencies.remote.each() { remoteItem ->
+                            "import"(buildRemoteItem(remoteItem))
+                        }
                     }
                 }
             }
@@ -148,18 +157,45 @@ class JavaCardTask extends DefaultTask {
     }
 
     /**
-     * Build import attributes map.
+     * Build import attributes map for local item.
      *
-     * @param importItem import item
+     * @param Import import item
      * @return map of import attributes
      */
-    def buildImportItem(importItem) {
+    def buildLocalItem(importItem) {
         def map = [:]
         if (importItem.exps?.trim()) {
             map["exps"] = importItem.exps
         }
         if (importItem.jar?.trim()) {
             map["jar"] = importItem.jar
+        }
+        logger.debug("import attributes : " + map)
+        return map
+    }
+
+    /**
+     * Build import attributes map for remote item.
+     *
+     * @param String remote item
+     * @return map of import attributes
+     */
+    def buildRemoteItem(remote) {
+        def map = [:]
+        if (remote?.trim()) {
+            project.configurations.create(remote)
+            project.dependencies.add(remote, remote)
+
+            def jarConf = project.configurations[remote].resolve()
+
+            if (jarConf.size() > 0) {
+                Utility.unzip(jarConf[0].getAbsolutePath(), jarConf[0].getParent())
+                map["exps"] = jarConf[0].getParent()
+                map["jar"] = jarConf[0].getAbsolutePath()
+            } else {
+                logger.error("error : exp/jar wasn't found in remote dependency : " + remote)
+                throw new InvalidDataException();
+            }
         }
         logger.debug("import attributes : " + map)
         return map

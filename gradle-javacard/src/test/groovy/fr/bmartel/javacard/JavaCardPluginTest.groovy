@@ -46,22 +46,25 @@ class JavaCardPluginTest {
             jckit: '/path/to/project/jckit',
             caps : [
                     cap1: [
-                            jckit      : '/path/to/jckit',
-                            sources    : '/path/to/sources',
-                            packageName: 'some.package.name',
-                            version    : '1.0',
-                            aid        : '0x01:0x02:0x03:0x04:0x05',
-                            output     : '/path/to/output',
-                            export     : '/path/to/export',
-                            jca        : '/path/to/jca',
-                            verify     : false,
-                            debug      : true,
-                            ints       : false,
-                            exports    : [
-                                    exps: '/path/to/exps',
-                                    jar : '/path/to/jar'
+                            jckit       : '/path/to/jckit',
+                            sources     : '/path/to/sources',
+                            packageName : 'some.package.name',
+                            version     : '1.0',
+                            aid         : '0x01:0x02:0x03:0x04:0x05',
+                            output      : '/path/to/output',
+                            export      : '/path/to/export',
+                            jca         : '/path/to/jca',
+                            verify      : false,
+                            debug       : true,
+                            ints        : false,
+                            dependencies: [
+                                    local : [
+                                            exps: '/path/to/exps',
+                                            jar : '/path/to/jar'
+                                    ],
+                                    remote: 'fr.bmartel:gplatform:1.6'
                             ],
-                            applets    : [
+                            applets     : [
                                     applet1: [
                                             className: 'some.class.applet1',
                                             aid      : '0x01:0x02:0x03:0x04:0x05:0x01'
@@ -118,9 +121,12 @@ class JavaCardPluginTest {
                     className projectTest.caps.cap1.applets.applet2.className
                     aid projectTest.caps.cap1.applets.applet2.aid
                 }
-                libs {
-                    exps projectTest.caps.cap1.exports.exps
-                    jar projectTest.caps.cap1.exports.jar
+                dependencies {
+                    remote projectTest.caps.cap1.dependencies.remote
+                    local {
+                        exps projectTest.caps.cap1.dependencies.local.exps
+                        jar projectTest.caps.cap1.dependencies.local.jar
+                    }
                 }
             }
         }
@@ -144,8 +150,10 @@ class JavaCardPluginTest {
         assertEquals(task.getJavaCard().caps[0].applets[0].aid, projectTest.caps.cap1.applets.applet1.aid)
         assertEquals(task.getJavaCard().caps[0].applets[1].className, projectTest.caps.cap1.applets.applet2.className)
         assertEquals(task.getJavaCard().caps[0].applets[1].aid, projectTest.caps.cap1.applets.applet2.aid)
-        assertEquals(task.getJavaCard().caps[0].imports.size(), 1)
-        assertEquals(task.getJavaCard().caps[0].imports[0].exps, projectTest.caps.cap1.exports.exps)
-        assertEquals(task.getJavaCard().caps[0].imports[0].jar, projectTest.caps.cap1.exports.jar)
+        assertEquals(task.getJavaCard().caps[0].dependencies.local[0].exps, projectTest.caps.cap1.dependencies.local.exps)
+        assertEquals(task.getJavaCard().caps[0].dependencies.local[0].jar, projectTest.caps.cap1.dependencies.local.jar)
+        assertEquals(task.getJavaCard().caps[0].dependencies.local.size(), 1)
+        assertEquals(task.getJavaCard().caps[0].dependencies.remote[0], projectTest.caps.cap1.dependencies.remote)
+        assertEquals(task.getJavaCard().caps[0].dependencies.remote.size(), 1)
     }
 }

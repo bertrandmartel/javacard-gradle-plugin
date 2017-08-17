@@ -27,6 +27,8 @@ package fr.bmartel.javacard
 import fr.bmartel.javacard.util.Utility
 import org.gradle.api.Project
 import org.gradle.api.ProjectConfigurationException
+import org.gradle.api.artifacts.ArtifactRepositoryContainer
+import org.gradle.internal.nativeintegration.filesystem.Stat
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Before
 import org.junit.Test
@@ -58,9 +60,11 @@ class JavaCardTaskTest {
                     className 'fr.bmartel.javacard.HelloSmartcard'
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
-                libs {
-                    jar StaticConfig.DEPENDENCY_PATH
-                    exps StaticConfig.EXP_PATH
+                dependencies {
+                    local {
+                        jar StaticConfig.DEPENDENCY_PATH
+                        exps StaticConfig.EXP_PATH
+                    }
                 }
             }
         }
@@ -92,6 +96,11 @@ class JavaCardTaskTest {
     void runTask(Closure closure) {
         deleteBuildDir()
         configureProject(closure)
+        def buildRepo = project.repositories.maven {
+            name 'build'
+            url "http://dl.bintray.com/bertrandmartel/maven"
+        }
+        project.repositories.add(buildRepo)
         project.evaluate()
         task.build()
         checkOutputFile(task)
@@ -132,6 +141,11 @@ class JavaCardTaskTest {
     }
 
     @Test
+    void simpleBuild() {
+        runTask(StaticConfig.SIMPLE_CONFIG)
+    }
+
+    @Test
     void validBuildFullOutput() {
         runTask(StaticConfig.FULL_OUTPUT)
     }
@@ -155,6 +169,9 @@ class JavaCardTaskTest {
     void sdkVersion222() {
         runTask(buildSdkConf(StaticConfig.getSdkPath("jc222_kit"), "applet1"))
     }
+
+
+
 
     @Test
     void sdkVersion303() {
