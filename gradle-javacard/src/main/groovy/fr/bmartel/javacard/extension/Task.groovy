@@ -23,39 +23,31 @@
  */
 
 package fr.bmartel.javacard.extension
+
 /**
- * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
+ * define the created gradle task that will hold the scripts
  *
  * @author Bertrand Martel
  */
-class JavaCard {
-
-    Config config
-
-    Scripts scripts
-
-    Config config(Closure closure) {
-        def someConfig = new Config()
-        closure.delegate = someConfig
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        config = someConfig
-        return someConfig
-    }
-
-    Scripts scripts(Closure closure) {
-        def someScript = new Scripts()
-        closure.delegate = someScript
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        scripts = someScript
-        return someScript
-    }
+class Task {
 
     /**
-     * Validate fields
+     * task name.
      */
-    def validate() {
-        config.validate()
+    String name
+
+    /**
+     * list of tasks.
+     */
+    List<String> scripts = []
+
+    void name(String name) {
+        this.name = name
+    }
+
+    void scripts(String... list) {
+        for (String item : list) {
+            this.scripts.add(item)
+        }
     }
 }

@@ -23,39 +23,29 @@
  */
 
 package fr.bmartel.javacard.extension
+
 /**
- * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
+ * a single script reference to send an apdu.
  *
  * @author Bertrand Martel
  */
-class JavaCard {
-
-    Config config
-
-    Scripts scripts
-
-    Config config(Closure closure) {
-        def someConfig = new Config()
-        closure.delegate = someConfig
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        config = someConfig
-        return someConfig
-    }
-
-    Scripts scripts(Closure closure) {
-        def someScript = new Scripts()
-        closure.delegate = someScript
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        scripts = someScript
-        return someScript
-    }
+class Script {
 
     /**
-     * Validate fields
+     * script name.
      */
-    def validate() {
-        config.validate()
+    String name
+
+    /**
+     * apdu to send.
+     */
+    String apdu
+
+    void name(String name) {
+        this.name = name
+    }
+
+    void apdu(String apdu) {
+        this.apdu = apdu
     }
 }

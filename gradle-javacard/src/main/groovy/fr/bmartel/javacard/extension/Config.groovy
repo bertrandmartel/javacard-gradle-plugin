@@ -1,2 +1,139 @@
 package fr.bmartel.javacard.extension
 
+import org.gradle.api.InvalidUserDataException
+
+
+/**
+ * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
+ *
+ * @author Bertrand Martel
+ */
+class Config {
+
+    /**
+     * path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise.
+     */
+    String jckit
+
+    /**
+     * log level to set to "VERBOSE","DEBUG","INFO","WARN" or "ERROR", default is "INFO"
+     */
+    String logLevel = 'INFO'
+
+    /**
+     * list of cap files to build.
+     */
+    List<Cap> caps = []
+
+    Cap cap(Closure closure) {
+        def someCap = new Cap()
+        closure.delegate = someCap
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.call()
+        caps.add(someCap)
+        return someCap
+    }
+
+    void jckit(String path) {
+        this.jckit = path
+    }
+
+    void logLevel(String logLevel) {
+        this.logLevel = logLevel
+    }
+
+    /**
+     * Validate fields
+     */
+    def validate() {
+        checkJckit()
+        checkOutput()
+        checkAppletClass()
+        checkDependency()
+    }
+
+    /**
+     * Check that an exp is defined for import object nested in cap.
+     */
+    def checkDependency() {
+        caps.each { capItem ->
+            if (capItem.dependencies != null) {
+                capItem.dependencies.local.each { importItem ->
+                    if (!importItem.exps?.trim() || !importItem.jar?.trim()) {
+                        throw new InvalidUserDataException('import exp/jar is required for local dependency')
+                    }
+                }
+            }
+        }
+    }
+
+/**
+ * Check that a className is defined for each applet nested in cap.
+ */
+    def checkAppletClass() {
+        caps.each { capItem ->
+            capItem.applets.each { appletItem ->
+                if (!appletItem.className?.trim()) {
+                    throw new InvalidUserDataException('applet className is required')
+                }
+            }
+        }
+    }
+
+/**
+ * Check that output field is defined.
+ */
+    def checkOutput() {
+        caps.each { capItem ->
+            if (!capItem.output?.trim()) {
+                throw new InvalidUserDataException('cap output is required')
+            }
+        }
+    }
+
+/**
+ * Check that jckit is defined either in the root javacard object or in all caps object if not in environment variable.
+ */
+    def checkJckit() {
+        if (jckit?.trim()) {
+            def folder = new File(jckit)
+            if (!folder.exists()) {
+                throw new InvalidUserDataException('Invalid JavaCard SDK path')
+            }
+        } else if (caps.size() > 0) {
+            caps.each { capItem ->
+                if (!capItem.jckit?.trim() && !System.env['JC_HOME']) {
+                    throw new InvalidUserDataException('Invalid JavaCard SDK path : use JC_HOME or jckit')
+                } else if (capItem.jckit?.trim() && !System.env['JC_HOME']) {
+                    def folder = new File(capItem.jckit)
+                    if (!folder.exists()) {
+                        throw new InvalidUserDataException('Invalid JavaCard SDK path')
+                    }
+                }
+            }
+        } else {
+            throw new InvalidUserDataException('no caps were referenced')
+        }
+    }
+
+    /**
+     * Get Javacard SDK
+     * @return
+     */
+    String getJcKit() {
+        if (System.env['JC_HOME']) {
+            return System.env['JC_HOME']
+        } else if (jckit?.trim()) {
+            return jckit
+        } else if (caps.size() > 0) {
+            def kit = ""
+            caps.each { capItem ->
+                if (capItem.jckit?.trim()) {
+                    kit = capItem.jckit
+                }
+            }
+            return kit
+        }
+        return ""
+    }
+}

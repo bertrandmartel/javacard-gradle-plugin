@@ -9,7 +9,13 @@
 
 A Gradle plugin for building JavaCard applets.
 
-This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) project and is inspired by [gradle-javacard](https://github.com/fidesmo/gradle-javacard)
+This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) project and [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro)
+
+## Features
+
+* build JavaCard applets (with the same capabilities as [ant-javacard](https://github.com/martinpaljak/ant-javacard))
+* install cap files
+* write quick testing scripts used to send apdu in a configurable way
 
 ## Usage 
 

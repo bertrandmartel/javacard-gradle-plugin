@@ -78,4 +78,8 @@ class Utility {
         }
         zip.close()
     }
+
+    static String formatApdu(apdu) {
+        return apdu.replaceAll(':', '')
+    }
 }

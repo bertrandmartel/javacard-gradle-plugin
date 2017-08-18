@@ -37,20 +37,22 @@ class JavaCardBuildTaskTest extends CommonTest {
 
     Closure buildSdkConf(sdk, appletName) {
         return {
-            cap {
-                jckit sdk
-                packageName 'fr.bmartel.javacard'
-                version '0.1'
-                aid '01:02:03:04:05:06:07:08:09'
-                output appletName + '.cap'
-                applet {
-                    className 'fr.bmartel.javacard.HelloSmartcard'
-                    aid '01:02:03:04:05:06:07:08:09:01:02'
-                }
-                dependencies {
-                    local {
-                        jar StaticConfig.DEPENDENCY_PATH
-                        exps StaticConfig.EXP_PATH
+            config {
+                cap {
+                    jckit sdk
+                    packageName 'fr.bmartel.javacard'
+                    version '0.1'
+                    aid '01:02:03:04:05:06:07:08:09'
+                    output appletName + '.cap'
+                    applet {
+                        className 'fr.bmartel.javacard.HelloWorld'
+                        aid '01:02:03:04:05:06:07:08:09:01:02'
+                    }
+                    dependencies {
+                        local {
+                            jar StaticConfig.DEPENDENCY_PATH
+                            exps StaticConfig.EXP_PATH
+                        }
                     }
                 }
             }
@@ -80,6 +82,11 @@ class JavaCardBuildTaskTest extends CommonTest {
     @Test
     void multipleApplets() {
         runBuildTask(StaticConfig.MULTIPLE_APPLETS)
+    }
+
+    @Test
+    void sdkVersion212() {
+        runBuildTask(buildSdkConf(StaticConfig.getSdkPath("jc212_kit"), "applet"))
     }
 
     @Test

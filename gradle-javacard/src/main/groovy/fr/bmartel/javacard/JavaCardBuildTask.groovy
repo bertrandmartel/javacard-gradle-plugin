@@ -44,7 +44,7 @@ class JavaCardBuildTask extends DefaultTask {
 
     @TaskAction
     def build() {
-        ant.lifecycleLogLevel = project.javacard.logLevel
+        ant.lifecycleLogLevel = project.javacard.config.logLevel
 
         //get location of ant-javacard task jar
         def loc = new File(pro.javacard.ant.JavaCard.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
@@ -55,9 +55,9 @@ class JavaCardBuildTask extends DefaultTask {
                 classname: 'pro.javacard.ant.JavaCard',
                 classpath: loc.absolutePath)
 
-        ant.javacard(buildJavacardMap(project.javacard.jckit)) {
+        ant.javacard(buildJavacardMap(project.javacard.config.jckit)) {
 
-            project.javacard.caps.each() { capItem ->
+            project.javacard.config.caps.each() { capItem ->
 
                 updateOutputFilePath(capItem)
 

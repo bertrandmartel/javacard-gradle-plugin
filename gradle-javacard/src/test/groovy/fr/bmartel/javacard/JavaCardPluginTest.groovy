@@ -43,8 +43,8 @@ class JavaCardPluginTest {
     private static Project project
 
     def projectTest = [
-            jckit: '/path/to/project/jckit',
-            caps : [
+            jckit  : '/path/to/project/jckit',
+            caps   : [
                     cap1: [
                             jckit       : '/path/to/jckit',
                             sources     : '/path/to/sources',
@@ -75,6 +75,24 @@ class JavaCardPluginTest {
                                     ]
                             ]
                     ]
+            ],
+            scripts: [
+                    script1: [
+                            name: 'script1',
+                            apdu: '010203'
+                    ],
+                    script2: [
+                            name: 'script2',
+                            apdu: '040506'
+                    ],
+                    task1  : [
+                            name   : 'task1',
+                            scripts: ['script1', 'script2']
+                    ],
+                    task2  : [
+                            name   : 'task2',
+                            scripts: ['script1', 'script2']
+                    ]
             ]
     ]
 
@@ -100,60 +118,102 @@ class JavaCardPluginTest {
     @Test
     void checkExtensionValues() {
         project.configure(project.javacard) {
-            jckit projectTest.jckit
-            cap {
-                jckit projectTest.caps.cap1.jckit
-                sources projectTest.caps.cap1.sources
-                packageName projectTest.caps.cap1.packageName
-                version projectTest.caps.cap1.version
-                aid projectTest.caps.cap1.aid
-                output projectTest.caps.cap1.output
-                export projectTest.caps.cap1.export
-                jca projectTest.caps.cap1.jca
-                verify projectTest.caps.cap1.verify
-                debug projectTest.caps.cap1.debug
-                ints projectTest.caps.cap1.ints
-                applet {
-                    className projectTest.caps.cap1.applets.applet1.className
-                    aid projectTest.caps.cap1.applets.applet1.aid
-                }
-                applet {
-                    className projectTest.caps.cap1.applets.applet2.className
-                    aid projectTest.caps.cap1.applets.applet2.aid
-                }
-                dependencies {
-                    remote projectTest.caps.cap1.dependencies.remote
-                    local {
-                        exps projectTest.caps.cap1.dependencies.local.exps
-                        jar projectTest.caps.cap1.dependencies.local.jar
+            config {
+                jckit projectTest.jckit
+                cap {
+                    jckit projectTest.caps.cap1.jckit
+                    sources projectTest.caps.cap1.sources
+                    packageName projectTest.caps.cap1.packageName
+                    version projectTest.caps.cap1.version
+                    aid projectTest.caps.cap1.aid
+                    output projectTest.caps.cap1.output
+                    export projectTest.caps.cap1.export
+                    jca projectTest.caps.cap1.jca
+                    verify projectTest.caps.cap1.verify
+                    debug projectTest.caps.cap1.debug
+                    ints projectTest.caps.cap1.ints
+                    applet {
+                        className projectTest.caps.cap1.applets.applet1.className
+                        aid projectTest.caps.cap1.applets.applet1.aid
                     }
+                    applet {
+                        className projectTest.caps.cap1.applets.applet2.className
+                        aid projectTest.caps.cap1.applets.applet2.aid
+                    }
+                    dependencies {
+                        remote projectTest.caps.cap1.dependencies.remote
+                        local {
+                            exps projectTest.caps.cap1.dependencies.local.exps
+                            jar projectTest.caps.cap1.dependencies.local.jar
+                        }
+                    }
+                }
+            }
+
+            scripts {
+
+                script {
+                    name projectTest.scripts.script1.name
+                    apdu projectTest.scripts.script1.apdu
+                }
+
+                script {
+                    name projectTest.scripts.script2.name
+                    apdu projectTest.scripts.script2.apdu
+                }
+
+                task {
+                    name projectTest.scripts.task1.name
+                    scripts projectTest.scripts.task1.scripts[0], projectTest.scripts.task1.scripts[1]
+                }
+
+                task {
+                    name projectTest.scripts.task2.name
+                    scripts projectTest.scripts.task2.scripts[0], projectTest.scripts.task2.scripts[1]
                 }
             }
         }
 
         JavaCardBuildTask task = project.getTasks().findByPath('buildJavacard')
-        assertEquals(task.getJavaCard().jckit, projectTest.jckit)
-        assertEquals(task.getJavaCard().caps.size(), 1)
-        assertEquals(task.getJavaCard().caps[0].jckit, projectTest.caps.cap1.jckit)
-        assertEquals(task.getJavaCard().caps[0].sources, projectTest.caps.cap1.sources)
-        assertEquals(task.getJavaCard().caps[0].packageName, projectTest.caps.cap1.packageName)
-        assertEquals(task.getJavaCard().caps[0].version, projectTest.caps.cap1.version)
-        assertEquals(task.getJavaCard().caps[0].aid, projectTest.caps.cap1.aid)
-        assertEquals(task.getJavaCard().caps[0].output, projectTest.caps.cap1.output)
-        assertEquals(task.getJavaCard().caps[0].export, projectTest.caps.cap1.export)
-        assertEquals(task.getJavaCard().caps[0].jca, projectTest.caps.cap1.jca)
-        assertEquals(task.getJavaCard().caps[0].verify, projectTest.caps.cap1.verify)
-        assertEquals(task.getJavaCard().caps[0].debug, projectTest.caps.cap1.debug)
-        assertEquals(task.getJavaCard().caps[0].ints, projectTest.caps.cap1.ints)
-        assertEquals(task.getJavaCard().caps[0].applets.size(), 2)
-        assertEquals(task.getJavaCard().caps[0].applets[0].className, projectTest.caps.cap1.applets.applet1.className)
-        assertEquals(task.getJavaCard().caps[0].applets[0].aid, projectTest.caps.cap1.applets.applet1.aid)
-        assertEquals(task.getJavaCard().caps[0].applets[1].className, projectTest.caps.cap1.applets.applet2.className)
-        assertEquals(task.getJavaCard().caps[0].applets[1].aid, projectTest.caps.cap1.applets.applet2.aid)
-        assertEquals(task.getJavaCard().caps[0].dependencies.local[0].exps, projectTest.caps.cap1.dependencies.local.exps)
-        assertEquals(task.getJavaCard().caps[0].dependencies.local[0].jar, projectTest.caps.cap1.dependencies.local.jar)
-        assertEquals(task.getJavaCard().caps[0].dependencies.local.size(), 1)
-        assertEquals(task.getJavaCard().caps[0].dependencies.remote[0], projectTest.caps.cap1.dependencies.remote)
-        assertEquals(task.getJavaCard().caps[0].dependencies.remote.size(), 1)
+        assertEquals(task.getJavaCard().config.jckit, projectTest.jckit)
+        assertEquals(task.getJavaCard().config.caps.size(), 1)
+        assertEquals(task.getJavaCard().config.caps[0].jckit, projectTest.caps.cap1.jckit)
+        assertEquals(task.getJavaCard().config.caps[0].sources, projectTest.caps.cap1.sources)
+        assertEquals(task.getJavaCard().config.caps[0].packageName, projectTest.caps.cap1.packageName)
+        assertEquals(task.getJavaCard().config.caps[0].version, projectTest.caps.cap1.version)
+        assertEquals(task.getJavaCard().config.caps[0].aid, projectTest.caps.cap1.aid)
+        assertEquals(task.getJavaCard().config.caps[0].output, projectTest.caps.cap1.output)
+        assertEquals(task.getJavaCard().config.caps[0].export, projectTest.caps.cap1.export)
+        assertEquals(task.getJavaCard().config.caps[0].jca, projectTest.caps.cap1.jca)
+        assertEquals(task.getJavaCard().config.caps[0].verify, projectTest.caps.cap1.verify)
+        assertEquals(task.getJavaCard().config.caps[0].debug, projectTest.caps.cap1.debug)
+        assertEquals(task.getJavaCard().config.caps[0].ints, projectTest.caps.cap1.ints)
+        assertEquals(task.getJavaCard().config.caps[0].applets.size(), 2)
+        assertEquals(task.getJavaCard().config.caps[0].applets[0].className, projectTest.caps.cap1.applets.applet1.className)
+        assertEquals(task.getJavaCard().config.caps[0].applets[0].aid, projectTest.caps.cap1.applets.applet1.aid)
+        assertEquals(task.getJavaCard().config.caps[0].applets[1].className, projectTest.caps.cap1.applets.applet2.className)
+        assertEquals(task.getJavaCard().config.caps[0].applets[1].aid, projectTest.caps.cap1.applets.applet2.aid)
+        assertEquals(task.getJavaCard().config.caps[0].dependencies.local[0].exps, projectTest.caps.cap1.dependencies.local.exps)
+        assertEquals(task.getJavaCard().config.caps[0].dependencies.local[0].jar, projectTest.caps.cap1.dependencies.local.jar)
+        assertEquals(task.getJavaCard().config.caps[0].dependencies.local.size(), 1)
+        assertEquals(task.getJavaCard().config.caps[0].dependencies.remote[0], projectTest.caps.cap1.dependencies.remote)
+        assertEquals(task.getJavaCard().config.caps[0].dependencies.remote.size(), 1)
+        assertEquals(task.getJavaCard().scripts.scripts.size(), 2)
+        assertEquals(task.getJavaCard().scripts.tasks.size(), 2)
+
+        assertEquals(task.getJavaCard().scripts.scripts[0].name, projectTest.scripts.script1.name)
+        assertEquals(task.getJavaCard().scripts.scripts[0].apdu, projectTest.scripts.script1.apdu)
+        assertEquals(task.getJavaCard().scripts.scripts[1].name, projectTest.scripts.script2.name)
+        assertEquals(task.getJavaCard().scripts.scripts[1].apdu, projectTest.scripts.script2.apdu)
+
+        assertEquals(task.getJavaCard().scripts.tasks[0].name, projectTest.scripts.task1.name)
+        assertEquals(task.getJavaCard().scripts.tasks[0].scripts.size(), 2)
+        assertEquals(task.getJavaCard().scripts.tasks[0].scripts[0], projectTest.scripts.task1.scripts[0])
+        assertEquals(task.getJavaCard().scripts.tasks[0].scripts[1], projectTest.scripts.task1.scripts[1])
+
+        assertEquals(task.getJavaCard().scripts.tasks[1].name, projectTest.scripts.task2.name)
+        assertEquals(task.getJavaCard().scripts.tasks[1].scripts.size(), 2)
+        assertEquals(task.getJavaCard().scripts.tasks[1].scripts[0], projectTest.scripts.task2.scripts[0])
+        assertEquals(task.getJavaCard().scripts.tasks[1].scripts[1], projectTest.scripts.task2.scripts[1])
     }
 }

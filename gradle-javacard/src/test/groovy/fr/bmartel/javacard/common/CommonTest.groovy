@@ -56,7 +56,7 @@ public class CommonTest {
     }
 
     void checkOutputFile(task) {
-        task.getJavaCard().caps.each {
+        task.getJavaCard().config.caps.each {
             capItem ->
                 assertTrue(TestUtils.getFile(capItem.output).exists())
                 if (capItem.export?.trim()) {

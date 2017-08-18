@@ -26,8 +26,10 @@ package fr.bmartel.javacard
 
 import fr.bmartel.javacard.extension.JavaCard
 import fr.bmartel.javacard.util.SdkUtils
+import fr.bmartel.javacard.util.Utility
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.tasks.JavaExec
@@ -66,17 +68,17 @@ class JavaCardPlugin implements Plugin<Project> {
                 Properties properties = new Properties()
                 properties.load(propertyFile.newDataInputStream())
                 if (properties.getProperty('jc.home')?.trim()) {
-                    extension.jckit = properties.getProperty('jc.home')
+                    extension.config.jckit = properties.getProperty('jc.home')
                 }
             }
-            logger.debug("jckit location : " + extension.getJcKit())
+            logger.debug("jckit location : " + extension.config.getJcKit())
 
             //resolve the javacard framework according to SDK version
             project.dependencies {
-                compile project.files(SdkUtils.getApiPath(extension.getJcKit(), logger))
+                compile project.files(SdkUtils.getApiPath(extension.config.getJcKit(), logger))
             }
 
-            extension.caps.each { capItem ->
+            extension.config.caps.each { capItem ->
 
                 if (capItem.dependencies != null) {
                     capItem.dependencies.local.each { localItem ->
@@ -86,6 +88,33 @@ class JavaCardPlugin implements Plugin<Project> {
                         project.dependencies.add("compile", remoteItem)
                     }
                 }
+            }
+
+            if (extension.scripts != null) {
+
+                extension.scripts.tasks.each { taskItem ->
+
+                    def command = []
+
+                    command.add('-d')
+
+                    taskItem.scripts.each { taskIncludedScript ->
+                        extension.scripts.scripts.each { scriptItem ->
+                            if (scriptItem.name == taskIncludedScript) {
+                                command.add('-a')
+                                command.add(Utility.formatApdu(scriptItem.apdu))
+                            }
+                        }
+                    }
+
+                    if (!project.tasks.findByName(taskItem.name)) {
+                        createScriptTask(project, taskItem.name, command)
+                    }
+                }
+            }
+
+            if (!project.tasks.findByName('installJavacard')) {
+                createInstallTask(project, extension)
             }
 
             //validate the extension properties
@@ -106,8 +135,26 @@ class JavaCardPlugin implements Plugin<Project> {
         }
 
         project.build.dependsOn(build)
+    }
 
+    def createInstallTask(Project project, extension) {
         def install = project.tasks.create(name: "installJavacard", type: JavaExec)
+        def args = ['-relax']
+        extension.config.caps.each { capItem ->
+            args.add('--delete')
+            args.add(Utility.formatApdu(capItem.aid))
+            args.add('--install')
+            args.add(new File(capItem.output).absolutePath)
+        }
+        createJavaExec(project, install, 'install', 'install cap file', args)
+    }
+
+    def createScriptTask(Project project, String taskName, args) {
+        def script = project.tasks.create(name: taskName, type: JavaExec)
+        createJavaExec(project, script, 'javacard-script', 'apdu script', args)
+    }
+
+    def createJavaExec(Project project, Task task, String grp, String desc, arguments) {
 
         FileCollection gproClasspath = project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
 
@@ -118,12 +165,15 @@ class JavaCardPlugin implements Plugin<Project> {
 
         gproClasspath += project.sourceSets.main.runtimeClasspath
 
-        install.configure {
-            group = 'install'
-            description = 'install cap file'
+        task.configure {
+            group = grp
+            description = desc
             main = 'pro.javacard.gp.GPTool'
             classpath = gproClasspath
-            args '--install', project.buildDir.absolutePath + File.separator + "javacard" + File.separator + "*.cap"
+            args(arguments)
+            doFirst {
+                logger.quiet(commandLine)
+            }
             dependsOn(project.jar)
         }
     }

@@ -46,208 +46,317 @@ class StaticConfig {
     }
 
     public static Closure VALID_CONFIG = {
-        jckit SDK_PATH
-        cap {
+        config {
             jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output '/home/akinaru/open_source/javacard-gradle-plugin/gradle-javacard/applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
-                remote 'fr.bmartel:gplatform:1.6'
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:1.6'
+                }
+            }
+        }
+    }
+
+    public static Closure VALID_SCRIPT_CONFIG = {
+        config {
+            jckit SDK_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:1.6'
+                }
+            }
+        }
+
+        scripts {
+            script {
+                name 'script1'
+                apdu '010203'
+            }
+            script {
+                name 'script2'
+                apdu '040506'
+            }
+            task {
+                name 'task1'
+                scripts 'script1', 'script2'
+            }
+            task {
+                name 'task2'
+                scripts 'script1'
+            }
+            task {
+                name 'task3'
+                scripts 'script2'
+            }
+        }
+    }
+
+    public static Closure RUNNABLE_SCRIPT_CONFIG = {
+        config {
+            jckit SDK_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:1.6'
+                }
+            }
+        }
+
+        scripts {
+            script {
+                name 'select'
+                apdu '00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00'
+            }
+            script {
+                name 'hello'
+                apdu '00:40:00:00:00'
+            }
+            task {
+                name 'task1'
+                scripts 'select', 'hello'
             }
         }
     }
 
     public static Closure SIMPLE_CONFIG = {
-        jckit SDK_PATH
-        cap {
+        config {
             jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
             }
         }
     }
 
     public static Closure FULL_OUTPUT = {
-        jckit SDK_PATH
-        cap {
+        config {
             jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            export 'other.exp'
-            jca 'someother.jca'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                export 'other.exp'
+                jca 'someother.jca'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure MULTIPLE_APPLETS = {
-        cap {
-            jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard2'
-                aid '01:02:03:04:05:06:07:08:09:01:03'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld2'
+                    aid '01:02:03:04:05:06:07:08:09:01:03'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure MULTIPLE_CAPS = {
-        cap {
-            jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
-        }
-        cap {
-            jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet2.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet2.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure UNDEFINED_JCKIT_PATH = {
-        cap {
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure INVALID_JCKIT_PATH = {
-        cap {
-            jckit 'path/to'
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                jckit 'path/to'
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure OUTPUT_REQUIRED = {
-        cap {
-            jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            applet {
-                className 'fr.bmartel.javacard.HelloSmartcard'
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure APPLET_CLASSNAME_REQUIRED = {
-        cap {
-            jckit SDK_PATH
-            packageName 'fr.bmartel.javacard'
-            version '0.1'
-            aid '01:02:03:04:05:06:07:08:09'
-            applet {
-                aid '01:02:03:04:05:06:07:08:09:01:02'
-            }
-            dependencies {
-                local {
-                    jar DEPENDENCY_PATH
-                    exps EXP_PATH
+        config {
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                applet {
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
                 }
             }
         }
     }
 
     public static Closure MISSING_ALL_CAPS = {
-        cap {
+        config {
+            cap {
 
+            }
         }
     }
 
     public static Closure NO_FIELDS = {
+        config {
+
+        }
     }
 }
