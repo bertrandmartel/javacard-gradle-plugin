@@ -25,35 +25,24 @@
 package fr.bmartel.javacard
 
 import fr.bmartel.javacard.extension.JavaCard
+import fr.bmartel.javacard.gp.GpExec
 import fr.bmartel.javacard.util.SdkUtils
 import fr.bmartel.javacard.util.Utility
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.JavaExec
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * JavaCard plugin
+ * JavaCard plugin.
  *
  * @author Bertrand Martel
  */
 class JavaCardPlugin implements Plugin<Project> {
 
     Logger logger = LoggerFactory.getLogger('javacard-logger')
-
-    def depList = [
-            'net.sf.jopt-simple:jopt-simple:5.0.4',
-            'org.bouncycastle:bcprov-jdk15on:1.57',
-            'com.google.guava:guava:22.0',
-            'com.googlecode.json-simple:json-simple:1.1.1',
-            'net.java.dev.jna:jna:4.2.1',
-            'org.slf4j:slf4j-simple:1.7.25',
-            'org.apache.ant:ant:1.8.2'
-    ]
 
     void apply(Project project) {
 
@@ -141,8 +130,15 @@ class JavaCardPlugin implements Plugin<Project> {
         project.build.dependsOn(build)
     }
 
+    /**
+     * create GpExec install cap file task
+     *
+     * @param project gradle project
+     * @param extension gradle extension
+     * @return
+     */
     def createInstallTask(Project project, extension) {
-        def install = project.tasks.create(name: "installJavacard", type: JavaExec)
+        def install = project.tasks.create(name: "installJavacard", type: GpExec)
         def args = ['-relax']
         extension.config.caps.each { capItem ->
             args.add('--delete')
@@ -150,35 +146,48 @@ class JavaCardPlugin implements Plugin<Project> {
             args.add('--install')
             args.add(new File(capItem.output).absolutePath)
         }
-        createJavaExec(project, install, 'install', 'install cap file', args)
+        createGpExec(project, install, 'install', 'install cap file', args)
     }
 
+    /**
+     * Create GpExec list applet task
+     *
+     * @param project gradle project
+     * @return
+     */
     def createListTask(Project project) {
-        def script = project.tasks.create(name: 'listJavacard', type: JavaExec)
-        createJavaExec(project, script, 'list', 'apdu script', ['-l'])
+        def script = project.tasks.create(name: 'listJavacard', type: GpExec)
+        createGpExec(project, script, 'list', 'apdu script', ['-l'])
     }
 
+    /**
+     * Create GpExec apdu script task.
+     *
+     * @param project gradle project
+     * @param taskName task name
+     * @param args
+     * @return
+     */
     def createScriptTask(Project project, String taskName, args) {
-        def script = project.tasks.create(name: taskName, type: JavaExec)
-        createJavaExec(project, script, 'javacard-script', 'apdu script', args)
+        def script = project.tasks.create(name: taskName, type: GpExec)
+        createGpExec(project, script, 'javacard-script', 'apdu script', args)
     }
 
-    def createJavaExec(Project project, Task task, String grp, String desc, arguments) {
-
-        FileCollection gproClasspath = project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
-
-        project.repositories.add(project.repositories.mavenCentral())
-        depList.each { item ->
-            project.dependencies.add("compile", item)
-        }
-
-        gproClasspath += project.sourceSets.main.runtimeClasspath
+    /**
+     * Create GpExec task
+     *
+     * @param project gradle project
+     * @param task gradle task object
+     * @param grp group name
+     * @param desc task description
+     * @param arguments arguments to gp tool
+     * @return
+     */
+    def createGpExec(Project project, Task task, String grp, String desc, arguments) {
 
         task.configure {
             group = grp
             description = desc
-            main = 'pro.javacard.gp.GPTool'
-            classpath = gproClasspath
             args(arguments)
             doFirst {
                 logger.quiet(commandLine)
