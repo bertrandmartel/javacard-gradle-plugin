@@ -18,6 +18,7 @@ allprojects {
     apply plugin: 'base'
     apply plugin: 'jacoco'
     apply plugin: 'com.github.kt3k.coveralls'
+    apply plugin: 'groovy'
 
     repositories {
         jcenter()
@@ -50,5 +51,16 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
         xml.enabled = true
         csv.enabled = false
         xml.destination = "${buildDir}/reports/jacoco/examples/jacocoTestReport.xml"
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            '**/pro/**',
+                            '**/jnasmartcardio/**',
+                            '**/apdu4j/**'
+                    ])
+
+        })
     }
 }
