@@ -53,7 +53,7 @@ class StaticConfig {
                 packageName 'fr.bmartel.javacard'
                 version '0.1'
                 aid '01:02:03:04:05:06:07:08:09'
-                output '/home/akinaru/open_source/javacard-gradle-plugin/gradle-javacard/applet.cap'
+                output 'applet.cap'
                 applet {
                     className 'fr.bmartel.javacard.HelloWorld'
                     aid '01:02:03:04:05:06:07:08:09:01:02'
