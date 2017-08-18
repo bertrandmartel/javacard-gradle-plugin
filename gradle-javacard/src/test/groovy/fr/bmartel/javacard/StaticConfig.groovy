@@ -63,7 +63,7 @@ class StaticConfig {
                         jar DEPENDENCY_PATH
                         exps EXP_PATH
                     }
-                    remote 'fr.bmartel:gplatform:1.6'
+                    remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
         }
@@ -87,7 +87,7 @@ class StaticConfig {
                         jar DEPENDENCY_PATH
                         exps EXP_PATH
                     }
-                    remote 'fr.bmartel:gplatform:1.6'
+                    remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
         }
@@ -134,7 +134,7 @@ class StaticConfig {
                         jar DEPENDENCY_PATH
                         exps EXP_PATH
                     }
-                    remote 'fr.bmartel:gplatform:1.6'
+                    remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
         }
