@@ -26,7 +26,7 @@ class JavaCardInstallTaskTest extends CommonTest {
     @Test
     void validBuildInstall() {
         runBuildTask(StaticConfig.VALID_CONFIG)
-        JavaExec installTask = project.getTasks().getByName("installJavacard")
+        JavaExec installTask = project.getTasks().getByName("installJavaCard")
         assertTrue(installTask ? true : false)
         assertTrue(installTask instanceof JavaExec)
         assertEquals(installTask.group, 'install')

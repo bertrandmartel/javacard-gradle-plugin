@@ -254,7 +254,7 @@ class JavaCardBuildTask extends DefaultTask {
      * Get JavaCard project object
      * @return
      */
-    public JavaCard getJavaCard() {
+    JavaCard getJavaCard() {
         return project.javacard
     }
 }

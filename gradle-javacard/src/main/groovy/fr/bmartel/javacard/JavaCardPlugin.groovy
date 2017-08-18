@@ -44,10 +44,16 @@ class JavaCardPlugin implements Plugin<Project> {
 
     Logger logger = LoggerFactory.getLogger('javacard-logger')
 
+    static String PLUGIN_NAME = 'javacard'
+
+    static String LIST_TASK = 'listJavaCard'
+    static String INSTALL_TASK = 'installJavaCard'
+    static String BUILD_TASK = 'buildJavaCard'
+
     void apply(Project project) {
 
         //define plugin extension
-        def extension = project.extensions.create("javacard", JavaCard)
+        def extension = project.extensions.create(PLUGIN_NAME, JavaCard)
 
         project.afterEvaluate {
 
@@ -102,7 +108,7 @@ class JavaCardPlugin implements Plugin<Project> {
                 }
             }
 
-            if (!project.tasks.findByName('installJavacard')) {
+            if (!project.tasks.findByName(INSTALL_TASK)) {
                 createInstallTask(project, extension)
             }
 
@@ -115,7 +121,7 @@ class JavaCardPlugin implements Plugin<Project> {
             project.plugins.apply(JavaPlugin)
         }
 
-        def build = project.tasks.create("buildJavacard", JavaCardBuildTask)
+        def build = project.tasks.create(BUILD_TASK, JavaCardBuildTask)
 
         build.configure {
             group = 'build'
@@ -123,7 +129,7 @@ class JavaCardPlugin implements Plugin<Project> {
             dependsOn(project.classes)
         }
 
-        if (!project.tasks.findByName('listJavacard')) {
+        if (!project.tasks.findByName(LIST_TASK)) {
             createListTask(project)
         }
 
@@ -138,7 +144,7 @@ class JavaCardPlugin implements Plugin<Project> {
      * @return
      */
     def createInstallTask(Project project, extension) {
-        def install = project.tasks.create(name: "installJavacard", type: GpExec)
+        def install = project.tasks.create(name: INSTALL_TASK, type: GpExec)
         def args = ['-relax']
         extension.config.caps.each { capItem ->
             args.add('--delete')
@@ -156,7 +162,7 @@ class JavaCardPlugin implements Plugin<Project> {
      * @return
      */
     def createListTask(Project project) {
-        def script = project.tasks.create(name: 'listJavacard', type: GpExec)
+        def script = project.tasks.create(name: LIST_TASK, type: GpExec)
         createGpExec(project, script, 'list', 'apdu script', ['-l'])
     }
 
@@ -184,7 +190,6 @@ class JavaCardPlugin implements Plugin<Project> {
      * @return
      */
     def createGpExec(Project project, Task task, String grp, String desc, arguments) {
-
         task.configure {
             group = grp
             description = desc

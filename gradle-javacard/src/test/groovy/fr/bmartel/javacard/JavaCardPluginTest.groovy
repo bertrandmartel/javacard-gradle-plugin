@@ -104,7 +104,7 @@ class JavaCardPluginTest {
 
     @Test
     void addBuildTask() {
-        def task = project.getTasks().findByPath('buildJavacard')
+        def task = project.getTasks().findByPath('buildJavaCard')
         assertThat(task, instanceOf(JavaCardBuildTask))
         assertThat(task.group, equalTo('build'))
         assertThat(task.dependsOn, hasItem(project.classes))
@@ -112,7 +112,7 @@ class JavaCardPluginTest {
 
     @Test
     void checkDependsSetup() {
-        assertThat(project.build.dependsOn, hasItem(project.buildJavacard))
+        assertThat(project.build.dependsOn, hasItem(project.buildJavaCard))
     }
 
     @Test
@@ -174,7 +174,7 @@ class JavaCardPluginTest {
             }
         }
 
-        JavaCardBuildTask task = project.getTasks().findByPath('buildJavacard')
+        JavaCardBuildTask task = project.getTasks().findByPath('buildJavaCard')
         assertEquals(task.getJavaCard().config.jckit, projectTest.jckit)
         assertEquals(task.getJavaCard().config.caps.size(), 1)
         assertEquals(task.getJavaCard().config.caps[0].jckit, projectTest.caps.cap1.jckit)

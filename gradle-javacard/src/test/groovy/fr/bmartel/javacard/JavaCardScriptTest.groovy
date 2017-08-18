@@ -45,7 +45,7 @@ class JavaCardScriptTest extends CommonTest {
     void runnableScript() {
         runBuildTask(StaticConfig.RUNNABLE_SCRIPT_CONFIG)
 
-        JavaExec installTask = project.getTasks().getByName("installJavacard")
+        JavaExec installTask = project.getTasks().getByName("installJavaCard")
         JavaExec task1 = project.getTasks().getByName('task1')
 
         assertTrue(task1 ? true : false)

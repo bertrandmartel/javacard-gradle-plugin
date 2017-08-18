@@ -11,11 +11,11 @@ import java.util.zip.ZipInputStream
  */
 class SdkUtils {
 
-    public static enum JC {
+    static enum JC {
         NONE, V212, V221, V222, V3;
     }
 
-    public static class JavaCardKit {
+    static class JavaCardKit {
         JC version = JC.NONE;
         String path = null;
     }
@@ -26,7 +26,7 @@ class SdkUtils {
      * @param extensionKit path to JavaCard SDK
      * @return api jar classpath
      */
-    public static getApiPath(extensionKit, Logger logger) {
+    static getApiPath(extensionKit, Logger logger) {
         def jckit = SdkUtils.detectSDK(extensionKit, logger)
 
         String api = null;
@@ -47,7 +47,7 @@ class SdkUtils {
      *
      * @return a {@link JavaCardKit} instance
      */
-    public static JavaCardKit detectSDK(String path, Logger logger) {
+    static JavaCardKit detectSDK(String path, Logger logger) {
         JavaCardKit detected = new JavaCardKit();
         if (path == null || path.trim() == "") {
             return detected;

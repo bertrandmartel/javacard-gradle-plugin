@@ -23,6 +23,7 @@
  */
 
 package fr.bmartel.javacard.extension
+
 /**
  * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
  *

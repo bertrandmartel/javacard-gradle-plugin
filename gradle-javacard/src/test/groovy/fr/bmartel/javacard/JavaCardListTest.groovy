@@ -13,7 +13,7 @@ class JavaCardListTest extends CommonTest {
     void listAppletTest() {
         runBuildTask(StaticConfig.VALID_CONFIG)
 
-        JavaExec listTask = project.getTasks().findByName('listJavacard')
+        JavaExec listTask = project.getTasks().findByName('listJavaCard')
 
         assertTrue(listTask ? true : false)
         assertTrue(listTask instanceof JavaExec)

@@ -35,7 +35,7 @@ public class CommonTest {
                 }
             }
         }
-        task = project.getTasks().getByName("buildJavacard")
+        task = project.getTasks().getByName("buildJavaCard")
     }
 
     void configureProject(Closure closure) {
