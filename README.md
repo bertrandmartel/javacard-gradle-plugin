@@ -15,7 +15,9 @@ This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-j
 
 * build JavaCard applets (with the same capabilities as [ant-javacard](https://github.com/martinpaljak/ant-javacard))
 * install cap files
+* list applets
 * write quick testing scripts used to send apdu in a configurable way
+* expose `GpExec` task type that enables usage of [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool inside Gradle
 
 ## Usage 
 
@@ -108,6 +110,18 @@ scripts {
 The above will create task `sendHello` that will select applet ID `01:02:03:04:05:06:07:08:09:01` and send the apdu `00:40:00:00:00`.  
 The order of the scripts's apdu in `task.scripts` is respected.  
 `00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00` or `'00A404000A0102030405060708090100'` are valid apdu.
+
+## Custom Global Platform Pro task
+
+You can build custom tasks that launch [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool :
+
+```groovy
+task displayHelp(type: fr.bmartel.javacard.gp.GpExec) {
+    description = 'display Global Platform pro help'
+    group = 'help'
+    args '-h'
+}
+```
 
 ## More complex example
 
