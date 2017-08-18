@@ -134,6 +134,10 @@ class JavaCardPlugin implements Plugin<Project> {
             dependsOn(project.classes)
         }
 
+        if (!project.tasks.findByName('listJavacard')) {
+            createListTask(project)
+        }
+
         project.build.dependsOn(build)
     }
 
@@ -147,6 +151,11 @@ class JavaCardPlugin implements Plugin<Project> {
             args.add(new File(capItem.output).absolutePath)
         }
         createJavaExec(project, install, 'install', 'install cap file', args)
+    }
+
+    def createListTask(Project project) {
+        def script = project.tasks.create(name: 'listJavacard', type: JavaExec)
+        createJavaExec(project, script, 'list', 'apdu script', ['-l'])
     }
 
     def createScriptTask(Project project, String taskName, args) {
