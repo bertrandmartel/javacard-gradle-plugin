@@ -1,3 +1,12 @@
 [submodule "gradle-javacard/src/main/ant-javacard"]
 	path = gradle-javacard/src/main/ant-javacard
 	url = git://github.com/martinpaljak/ant-javacard.git
+[submodule "gradle-javacard/src/main/global-platform-pro"]
+	path = gradle-javacard/src/main/global-platform-pro
+	url = git@github.com:martinpaljak/GlobalPlatformPro.git
+[submodule "gradle-javacard/src/main/apdu4j"]
+	path = gradle-javacard/src/main/apdu4j
+	url = git@github.com:martinpaljak/apdu4j.git
+[submodule "gradle-javacard/src/main/jnasmartcardio"]
+	path = gradle-javacard/src/main/jnasmartcardio
+	url = git@github.com:martinpaljak/jnasmartcardio.git

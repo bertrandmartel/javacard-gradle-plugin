@@ -28,7 +28,9 @@ import fr.bmartel.javacard.extension.JavaCard
 import fr.bmartel.javacard.util.SdkUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.JavaExec
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -40,6 +42,16 @@ import org.slf4j.LoggerFactory
 class JavaCardPlugin implements Plugin<Project> {
 
     Logger logger = LoggerFactory.getLogger('javacard-logger')
+
+    def depList = [
+            'net.sf.jopt-simple:jopt-simple:5.0.4',
+            'org.bouncycastle:bcprov-jdk15on:1.57',
+            'com.google.guava:guava:22.0',
+            'com.googlecode.json-simple:json-simple:1.1.1',
+            'net.java.dev.jna:jna:4.2.1',
+            'org.slf4j:slf4j-simple:1.7.25',
+            'org.apache.ant:ant:1.8.2'
+    ]
 
     void apply(Project project) {
 
@@ -85,7 +97,7 @@ class JavaCardPlugin implements Plugin<Project> {
             project.plugins.apply(JavaPlugin)
         }
 
-        def build = project.tasks.create("buildJavacard", JavaCardTask)
+        def build = project.tasks.create("buildJavacard", JavaCardBuildTask)
 
         build.configure {
             group = 'build'
@@ -94,5 +106,25 @@ class JavaCardPlugin implements Plugin<Project> {
         }
 
         project.build.dependsOn(build)
+
+        def install = project.tasks.create(name: "installJavacard", type: JavaExec)
+
+        FileCollection gproClasspath = project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
+
+        project.repositories.add(project.repositories.mavenCentral())
+        depList.each { item ->
+            project.dependencies.add("compile", item)
+        }
+
+        gproClasspath += project.sourceSets.main.runtimeClasspath
+
+        install.configure {
+            group = 'install'
+            description = 'install cap file'
+            main = 'pro.javacard.gp.GPTool'
+            classpath = gproClasspath
+            args '--install', project.buildDir.absolutePath + File.separator + "javacard" + File.separator + "*.cap"
+            dependsOn(project.jar)
+        }
     }
 }

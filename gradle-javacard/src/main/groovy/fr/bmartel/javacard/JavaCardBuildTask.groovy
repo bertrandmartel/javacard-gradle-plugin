@@ -35,7 +35,7 @@ import org.gradle.api.tasks.TaskAction
  *
  * @author Bertrand Martel
  */
-class JavaCardTask extends DefaultTask {
+class JavaCardBuildTask extends DefaultTask {
 
     /**
      * default directory for output

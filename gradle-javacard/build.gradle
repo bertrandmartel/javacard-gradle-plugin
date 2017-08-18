@@ -16,7 +16,15 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    compile localGroovy()
+    //compile localGroovy()
+    compile 'net.sf.jopt-simple:jopt-simple:5.0.4'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.57'
+    compile 'com.google.guava:guava:22.0'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    //compile 'org.slf4j:slf4j-simple:1.7.25'
+    compile 'org.apache.ant:ant:1.8.2'
+    compile 'net.java.dev.jna:jna:4.2.1'
+
     testCompile 'junit:junit:4.11'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
@@ -54,7 +62,7 @@ bintray {
             }
 
             mavenCentralSync {
-                sync = false
+                sync = true
                 //Optional (true by default). Determines whether to sync the version to Maven Central.
                 user = "$System.env.MAVEN_CENTRAL_USER_TOKEN" //OSS user token
                 password = "$System.env.MAVEN_CENTRAL_PASSWORD" //OSS user password
@@ -105,7 +113,12 @@ install {
 sourceSets {
     main {
         java {
-            srcDir 'src/main/ant-javacard/src/pro'
+            srcDirs = [
+                    'src/main/ant-javacard/src/pro',
+                    'src/main/global-platform-pro/src',
+                    'src/main/apdu4j/src',
+                    'src/main/jnasmartcardio/src/main/java'
+            ]
             exclude '**/testapplets/**'
         }
     }

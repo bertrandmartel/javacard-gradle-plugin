@@ -45,10 +45,10 @@ plugin is available from `jcenter()` or `mavenCentral()`
 
 The path to JavaCard SDK can be specified through : 
 
-* *[Recommended]* use `jc.home` properties in `local.properties` file located in your project root (in the same way as Android projects) : 
+* use `jc.home` properties in `local.properties` file located in your project root (in the same way as Android projects) : 
   * in project root : `echo "jc.home=$PWD/oracle_javacard_sdks/jc222_kit" >> local.properties`
-* `JC_HOME` global environment variable, for instance using : `export JC_HOME="$PWD/sdks/jck222_kit"`
 * using `jckit` attribute (see [ant-javacard](https://github.com/martinpaljak/ant-javacard#syntax))
+* `JC_HOME` global environment variable, for instance using : `export JC_HOME="$PWD/sdks/jck222_kit"`
 
 ## More complex example
 
@@ -62,7 +62,7 @@ repositories {
 }
 
 javacard {
-    jckit "/path/to/oracle_javacard_sdks/jc222_kit"
+    jckit "../oracle_javacard_sdks/jc222_kit"
     cap {
         packageName 'fr.bmartel.javacard'
         version '0.1'
