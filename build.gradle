@@ -38,6 +38,17 @@ subprojects {
             xml.enabled = true
             csv.enabled = false
         }
+        afterEvaluate {
+            classDirectories = files(classDirectories.files.collect {
+                fileTree(dir: it,
+                        exclude: [
+                                '**/pro/**',
+                                '**/jnasmartcardio/**',
+                                '**/apdu4j/**'
+                        ])
+
+            })
+        }
     }
 }
 
