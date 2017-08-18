@@ -81,7 +81,8 @@ The path to JavaCard SDK can be specified through :
 | task name    | description   |
 |--------------|---------------|
 | buildJavaCard | build JavaCard cap files |
-| installJavaCard | delete existing aid & install all JavaCard cap files |
+| installJavaCard | delete existing aid & install all JavaCard cap files (`gp --delete XXXX --install file.cap`) |
+| listJavaCard | list applets (`gp -l`) |
 
 * apdu script task
 
