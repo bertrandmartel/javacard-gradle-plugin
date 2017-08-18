@@ -40,7 +40,7 @@ class JavaCardBuildTask extends DefaultTask {
     /**
      * default directory for output
      */
-    def jcBuildDir = project.buildDir.absolutePath + "/javacard"
+    def jcBuildDir = project.buildDir.absolutePath + File.separator + "javacard"
 
     @TaskAction
     def build() {
@@ -216,22 +216,22 @@ class JavaCardBuildTask extends DefaultTask {
         if (!file.isAbsolute()) {
             Utility.createFolder(jcBuildDir)
             if (!capItem.jca?.trim()) {
-                capItem.jca = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".jca"
+                capItem.jca = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".jca"
                 logger.debug('update jca path to ' + capItem.jca)
             }
             if (!capItem.export?.trim()) {
-                capItem.export = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".exp"
+                capItem.export = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".exp"
                 logger.debug('update export path to ' + capItem.export)
             }
-            capItem.output = jcBuildDir + "/" + capItem.output
+            capItem.output = jcBuildDir + File.separator + capItem.output
         } else {
             if (!capItem.jca?.trim()) {
-                capItem.jca = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".jca"
+                capItem.jca = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".jca"
                 logger.debug('update jca path to ' + capItem.jca)
                 Utility.createFolder(jcBuildDir)
             }
             if (!capItem.export?.trim()) {
-                capItem.export = jcBuildDir + "/" + Utility.removeExtension(capItem.output) + ".exp"
+                capItem.export = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".exp"
                 logger.debug('update export path to ' + capItem.export)
                 Utility.createFolder(jcBuildDir)
             }
@@ -240,12 +240,12 @@ class JavaCardBuildTask extends DefaultTask {
         //update jca & export when non absolute path are referenced
         File jcaFile = new File(capItem.jca);
         if (!jcaFile.isAbsolute()) {
-            capItem.jca = jcBuildDir + "/" + capItem.jca
+            capItem.jca = jcBuildDir + File.separator + capItem.jca
             logger.debug('update jca path to ' + capItem.jca)
         }
         File exportFile = new File(capItem.export);
         if (!exportFile.isAbsolute()) {
-            capItem.export = jcBuildDir + "/" + capItem.export
+            capItem.export = jcBuildDir + File.separator + capItem.export
             logger.debug('update export path to ' + capItem.export)
         }
     }

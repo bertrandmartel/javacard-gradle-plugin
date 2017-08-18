@@ -17,7 +17,7 @@ class JavaCardListTest extends CommonTest {
 
         assertTrue(listTask ? true : false)
         assertTrue(listTask instanceof JavaExec)
-        assertEquals(listTask.group, 'list')
+        assertEquals(listTask.group, 'global platform')
         assertEquals(listTask.args, ['-l'])
         assertEquals(listTask.main, 'pro.javacard.gp.GPTool')
 

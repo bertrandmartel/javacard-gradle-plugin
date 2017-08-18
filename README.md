@@ -25,7 +25,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.1.81'
+        classpath 'fr.bmartel:gradle-javacard:1.2.0'
     }
 }
 
@@ -88,7 +88,7 @@ The path to JavaCard SDK can be specified through :
 
 It's possible to create custom tasks that will send series of custom apdu :
 
-```
+```groovy
 scripts {
     script {
         name 'select'

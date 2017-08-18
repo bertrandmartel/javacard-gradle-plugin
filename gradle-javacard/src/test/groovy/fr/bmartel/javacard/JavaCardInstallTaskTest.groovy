@@ -29,8 +29,11 @@ class JavaCardInstallTaskTest extends CommonTest {
         JavaExec installTask = project.getTasks().getByName("installJavaCard")
         assertTrue(installTask ? true : false)
         assertTrue(installTask instanceof JavaExec)
-        assertEquals(installTask.group, 'install')
-        //assertEquals(installTask.args, ['--install', project.buildDir.absolutePath + File.separator + "javacard" + File.separator + "*.cap"])
+        assertEquals(installTask.group, 'global platform')
+        assertEquals(installTask.args, ['-relax',
+                                        '--delete', '010203040506070809',
+                                        '--install', project.buildDir.absolutePath + File.separator + "javacard" + File.separator + "applet.cap"
+        ])
         assertEquals(installTask.main, 'pro.javacard.gp.GPTool')
         //installTask.exec()
     }

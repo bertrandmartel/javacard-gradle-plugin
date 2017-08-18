@@ -26,9 +26,9 @@ class JavaCardScriptTest extends CommonTest {
         assertTrue(task2 instanceof JavaExec)
         assertTrue(task3 instanceof JavaExec)
 
-        assertEquals(task1.group, 'javacard-script')
-        assertEquals(task2.group, 'javacard-script')
-        assertEquals(task3.group, 'javacard-script')
+        assertEquals(task1.group, 'global platform')
+        assertEquals(task2.group, 'global platform')
+        assertEquals(task3.group, 'global platform')
 
         assertEquals(task1.args, ['-d', '-a', '010203', '-a', '040506'])
         assertEquals(task2.args, ['-d', '-a', '010203'])
@@ -50,7 +50,7 @@ class JavaCardScriptTest extends CommonTest {
 
         assertTrue(task1 ? true : false)
         assertTrue(task1 instanceof JavaExec)
-        assertEquals(task1.group, 'javacard-script')
+        assertEquals(task1.group, 'global platform')
         assertEquals(task1.args, ['-d', '-a', '00A404000A0102030405060708090100', '-a', '0040000000'])
         assertEquals(task1.main, 'pro.javacard.gp.GPTool')
 

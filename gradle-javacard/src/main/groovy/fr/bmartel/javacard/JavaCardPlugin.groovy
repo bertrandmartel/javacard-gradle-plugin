@@ -50,6 +50,8 @@ class JavaCardPlugin implements Plugin<Project> {
     static String INSTALL_TASK = 'installJavaCard'
     static String BUILD_TASK = 'buildJavaCard'
 
+    static String GLOBAL_PLATFORM_GROUP = 'global platform'
+
     void apply(Project project) {
 
         //define plugin extension
@@ -150,9 +152,15 @@ class JavaCardPlugin implements Plugin<Project> {
             args.add('--delete')
             args.add(Utility.formatApdu(capItem.aid))
             args.add('--install')
-            args.add(new File(capItem.output).absolutePath)
+
+            File file = new File(capItem.output);
+            if (!file.isAbsolute()) {
+                args.add(new File(project.buildDir.absolutePath + File.separator + "javacard" + File.separator + capItem.output).absolutePath)
+            } else {
+                args.add(new File(capItem.output).absolutePath)
+            }
         }
-        createGpExec(project, install, 'install', 'install cap file', args)
+        createGpExec(project, install, GLOBAL_PLATFORM_GROUP, 'install cap file', args)
     }
 
     /**
@@ -163,7 +171,7 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def createListTask(Project project) {
         def script = project.tasks.create(name: LIST_TASK, type: GpExec)
-        createGpExec(project, script, 'list', 'apdu script', ['-l'])
+        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'apdu script', ['-l'])
     }
 
     /**
@@ -176,7 +184,7 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def createScriptTask(Project project, String taskName, args) {
         def script = project.tasks.create(name: taskName, type: GpExec)
-        createGpExec(project, script, 'javacard-script', 'apdu script', args)
+        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'apdu script', args)
     }
 
     /**
@@ -195,7 +203,7 @@ class JavaCardPlugin implements Plugin<Project> {
             description = desc
             args(arguments)
             doFirst {
-                logger.quiet(commandLine)
+                println('gp ' + arguments)
             }
             dependsOn(project.jar)
         }
