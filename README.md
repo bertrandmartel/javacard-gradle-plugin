@@ -9,7 +9,7 @@
 
 A Gradle plugin for building JavaCard applets.
 
-This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) project and [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro)
+This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) project and [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro), it is inspired by [gradle-javacard](https://github.com/fidesmo/gradle-javacard)
 
 ## Features
 
@@ -32,14 +32,32 @@ buildscript {
 apply plugin: 'javacard'
 
 javacard {
-    cap {
-        packageName 'fr.bmartel.javacard'
-        version '0.1'
-        aid '01:02:03:04:05:06:07:08:09'
-        output 'applet.cap'
-        applet {
-            className 'fr.bmartel.javacard.HelloSmartcard'
-            aid '01:02:03:04:05:06:07:08:09:01:02'
+
+    config {
+        cap {
+            packageName 'fr.bmartel.javacard'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:09'
+            output 'applet.cap'
+            applet {
+                className 'fr.bmartel.javacard.HelloWorld'
+                aid '01:02:03:04:05:06:07:08:09:01:02'
+            }
+        }
+    }
+
+    scripts {
+        script {
+            name 'select'
+            apdu '00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00'
+        }
+        script {
+            name 'hello'
+            apdu '00:40:00:00:00'
+        }
+        task {
+            name 'sendHello'
+            scripts 'select', 'hello'
         }
     }
 }
@@ -56,6 +74,40 @@ The path to JavaCard SDK can be specified through :
 * using `jckit` attribute (see [ant-javacard](https://github.com/martinpaljak/ant-javacard#syntax))
 * `JC_HOME` global environment variable, for instance using : `export JC_HOME="$PWD/sdks/jck222_kit"`
 
+## Tasks
+
+* Common task
+
+| task name    | description   |
+|--------------|---------------|
+| buildJavaCard | build JavaCard cap files |
+| installJavaCard | delete existing aid & install all JavaCard cap files |
+
+* apdu script task
+
+It's possible to create custom tasks that will send series of custom apdu :
+
+```
+scripts {
+    script {
+        name 'select'
+        apdu '00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00'
+    }
+    script {
+        name 'hello'
+        apdu '00:40:00:00:00'
+    }
+    task {
+        name 'sendHello'
+        scripts 'select', 'hello'
+    }
+}
+```
+
+The above will create task `sendHello` that will select applet ID `01:02:03:04:05:06:07:08:09:01` and send the apdu `00:40:00:00:00`.  
+The order of the scripts's apdu in `task.scripts` is respected.  
+`00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00` or `'00A404000A0102030405060708090100'` are valid apdu.
+
 ## More complex example
 
 ```groovy
@@ -68,36 +120,54 @@ repositories {
 }
 
 javacard {
-    jckit "../oracle_javacard_sdks/jc222_kit"
-    cap {
-        packageName 'fr.bmartel.javacard'
-        version '0.1'
-        aid '01:02:03:04:05:06:07:08:09'
-        output 'applet1.cap'
-        applet {
-            className 'fr.bmartel.javacard.HelloSmartcard'
-            aid '01:02:03:04:05:06:07:08:09:01:02'
+
+    config {
+        jckit "../oracle_javacard_sdks/jc222_kit"
+        cap {
+            packageName 'fr.bmartel.javacard'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:09'
+            output 'applet1.cap'
+            applet {
+                className 'fr.bmartel.javacard.HelloSmartcard'
+                aid '01:02:03:04:05:06:07:08:09:01:02'
+            }
+            applet {
+                className 'fr.bmartel.javacard.GoodByeSmartCard'
+                aid '01:02:03:04:05:06:07:08:09:01:03'
+            }
         }
-        applet {
-            className 'fr.bmartel.javacard.GoodByeSmartCard'
-            aid '01:02:03:04:05:06:07:08:09:01:03'
+        cap {
+            packageName 'fr.bmartel.javacard'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:0A'
+            output 'applet2.cap'
+            applet {
+                className 'fr.bmartel.javacard.SomeOtherClass'
+                aid '01:02:03:04:05:06:07:08:09:01:04'
+            }
+            dependencies {
+                local {
+                    jar '/path/to/dependency.jar'
+                    exps '/path/to/expfolder'
+                }
+                remote 'fr.bmartel:gplatform:2.1.1'
+            }
         }
     }
-    cap {
-        packageName 'fr.bmartel.javacard'
-        version '0.1'
-        aid '01:02:03:04:05:06:07:08:0A'
-        output 'applet2.cap'
-        applet {
-            className 'fr.bmartel.javacard.SomeOtherClass'
-            aid '01:02:03:04:05:06:07:08:09:01:04'
+
+    scripts {
+        script {
+            name 'select'
+            apdu '00:A4:04:00:0A:01:02:03:04:05:06:07:08:09:01:00'
         }
-        dependencies {
-            local {
-                jar '/path/to/dependency.jar'
-                exps '/path/to/expfolder'
-            }
-            remote 'fr.bmartel:gplatform:1.6'
+        script {
+            name 'hello'
+            apdu '00:40:00:00:00'
+        }
+        task {
+            name 'sendHello'
+            scripts 'select', 'hello'
         }
     }
 }
@@ -109,29 +179,37 @@ Note2 : you can add as many `local` or `remote` dependency as you want
 ## Syntax
 
 * javacard [Closure]
-  * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise
-  * logLevel [String] - log level of ant-javacard task ("VERBOSE","DEBUG","INFO","WARN","ERROR"). default : "INFO"
-  * cap [Closure] - construct a CAP file **Required**
-    * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
-    * sources [String] - path to Java source code, to be compiled against the current JavaCard SDK. **Required**
-    * classes [String] - path to pre-compiled class files to be assembled into a CAP file. If both classes and sources are specified, compiled class files will be put to classes folder, which is created if missing
-    * packageName [String] - name of the package of the CAP file. Optional - set to the parent package of the applet class if left unspecified.
-    * version [String] - version of the package. Optional - defaults to 0.0 if left unspecified.
-    * aid [String] - AID (hex) of the package. Recommended - or set to the 5 first bytes of the applet AID if left unspecified.
-    * output [String] - path where to save the generated CAP file. if a filename or a non-absolute path is referenced, the output will be in `build/javacard/{output}` **Required**
-    * export [String] - path (folder) where to place the JAR and generated EXP file. Default output directory is `build/javacard`. Filename depends on `output` filename if referenced. Optional.
-    * jca [String] - path where to save the generated JavaCard Assembly (JCA) file. Default output directory is `build/javacard`. Filename depends on `output` filename if referenced. Optional.
-    * verify [boolean] - if set to false, disables verification of the resulting CAP file with offcardeverifier. Optional.
-    * debug [boolean] - if set to true, generates debug CAP components. Optional.
-    * ints [boolean] - if set to true, enables support for 32 bit int type. Optional.
-    * applet [Closure] - for creating an applet inside the CAP
-      * className [String] - class of the Applet where install() method is defined. **Required**
-      * aid [String] - AID (hex) of the applet. Recommended - or set to package aid+i where i is index of the applet definition in the build.xml instruction
-    * dependencies [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
-      * local [Closure] local dependencies must include absolute path to exp/jar
-        * exps [String] - path to the folder keeping .exp files. Required
-        * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
-      * remote [String] remote dependencies (ex: "group:module:1.0").the remote repository (maven repo) must be included in the project
+  * config [Closure] - object that holds build configuration **Required**
+    * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise
+    * logLevel [String] - log level of ant-javacard task ("VERBOSE","DEBUG","INFO","WARN","ERROR"). default : "INFO"
+    * cap [Closure] - construct a CAP file **Required**
+      * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
+      * sources [String] - path to Java source code, to be compiled against the current JavaCard SDK. **Required**
+      * classes [String] - path to pre-compiled class files to be assembled into a CAP file. If both classes and sources are specified, compiled class files will be put to classes folder, which is created if missing
+      * packageName [String] - name of the package of the CAP file. Optional - set to the parent package of the applet class if left unspecified.
+      * version [String] - version of the package. Optional - defaults to 0.0 if left unspecified.
+      * aid [String] - AID (hex) of the package. Recommended - or set to the 5 first bytes of the applet AID if left unspecified.
+      * output [String] - path where to save the generated CAP file. if a filename or a non-absolute path is referenced, the output will be in `build/javacard/{output}` **Required**
+      * export [String] - path (folder) where to place the JAR and generated EXP file. Default output directory is `build/javacard`. Filename depends on `output` filename if referenced. Optional.
+      * jca [String] - path where to save the generated JavaCard Assembly (JCA) file. Default output directory is `build/javacard`. Filename depends on `output` filename if referenced. Optional.
+      * verify [boolean] - if set to false, disables verification of the resulting CAP file with offcardeverifier. Optional.
+      * debug [boolean] - if set to true, generates debug CAP components. Optional.
+      * ints [boolean] - if set to true, enables support for 32 bit int type. Optional.
+      * applet [Closure] - for creating an applet inside the CAP
+        * className [String] - class of the Applet where install() method is defined. **Required**
+        * aid [String] - AID (hex) of the applet. Recommended - or set to package aid+i where i is index of the applet definition in the build.xml instruction
+      * dependencies [Closure] - for linking against external components/libraries, like GPSystem or OPSystem
+        * local [Closure] local dependencies must include absolute path to exp/jar
+          * exps [String] - path to the folder keeping .exp files. Required
+          * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
+        * remote [String] remote dependencies (ex: "group:module:1.0").the remote repository (maven repo) must be included in the project
+  * scripts [Closure] - object that holds the configurable scripts to send apdu
+     * script [Closure] - a script referenced by name/apdu value to be sent
+       * name [String] - script name (ex: select)
+       * apdu [String] - apdu value to be sent (it can hold ":" to separate bytes)
+     * task [Closure] - gradle task to create that will map the specified list of apdu to send
+       * name [String] - task name
+       * scripts [String...] - list of script's name
 
 ## License
 
