@@ -112,10 +112,10 @@ sourceSets {
     main {
         java {
             srcDirs = [
-                    'src/main/ant-javacard/src/pro',
-                    'src/main/global-platform-pro/src',
-                    'src/main/apdu4j/src',
-                    'src/main/jnasmartcardio/src/main/java'
+                    'src/main/java/ant-javacard/src/pro',
+                    'src/main/java/global-platform-pro/src',
+                    'src/main/java/apdu4j/src',
+                    'src/main/java/jnasmartcardio/src/main/java'
             ]
             exclude '**/testapplets/**'
         }

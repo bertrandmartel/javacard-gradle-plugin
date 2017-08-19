@@ -42,7 +42,7 @@ class StaticConfig {
     }
 
     public static String getSdkPath(folder) {
-        return System.getProperty("user.dir") + '/src/main/ant-javacard/sdks/' + folder
+        return System.getProperty("user.dir") + '/src/main/java/ant-javacard/sdks/' + folder
     }
 
     public static Closure VALID_CONFIG = {
