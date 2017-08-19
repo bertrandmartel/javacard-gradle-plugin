@@ -22,25 +22,25 @@
  * THE SOFTWARE.
  */
 
-package fr.bmartel.javacard;
+package fr.bmartel.javacard
 
-import fr.bmartel.javacard.util.Utility;
-import org.junit.Test;
+import fr.bmartel.javacard.util.Utility
+import org.junit.Test
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals
 
 /**
  * Test utility functions.
  *
  * @author Bertrand Martel
  */
-public class UtilityTest {
+class UtilityTest {
 
     @Test
-    public void removeExtensionTest() {
-        assertEquals("test", Utility.removeExtension("test.txt"));
-        assertEquals("/some/path/file", Utility.removeExtension("/some/path/file.cap"));
-        assertEquals("test_test", Utility.removeExtension("test_test.exp"));
-        assertEquals("somefile.txt", Utility.removeExtension("somefile.txt.txt"));
+    void removeExtensionTest() {
+        assertEquals("test", Utility.removeExtension("test.txt"))
+        assertEquals("/some/path/file", Utility.removeExtension("/some/path/file.cap"))
+        assertEquals("test_test", Utility.removeExtension("test_test.exp"))
+        assertEquals("somefile.txt", Utility.removeExtension("somefile.txt.txt"))
     }
 }
