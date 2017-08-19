@@ -57,6 +57,10 @@ class JavaCardPlugin implements Plugin<Project> {
         //define plugin extension
         def extension = project.extensions.create(PLUGIN_NAME, JavaCard)
 
+        project.configurations {
+            jcardsim
+        }
+
         project.afterEvaluate {
 
             File propertyFile = project.rootProject.file('local.properties')
@@ -70,9 +74,25 @@ class JavaCardPlugin implements Plugin<Project> {
             }
             logger.debug("jckit location : " + extension.config.getJcKit())
 
+            if (!project.repositories.findByName("jcardsim")) {
+                def buildRepo = project.repositories.maven {
+                    name 'jcardsim'
+                    url "http://dl.bintray.com/bertrandmartel/maven"
+                }
+                project.repositories.add(buildRepo)
+            }
+
             //resolve the javacard framework according to SDK version
             project.dependencies {
                 compile project.files(SdkUtils.getApiPath(extension.config.getJcKit(), logger))
+                testCompile 'junit:junit:4.12'
+                jcardsim 'com.licel:jcardsim:3.0.4'
+            }
+
+            project.sourceSets {
+                test {
+                    runtimeClasspath = project.configurations.jcardsim
+                }
             }
 
             extension.config.caps.each { capItem ->

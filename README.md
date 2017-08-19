@@ -9,7 +9,7 @@
 
 A Gradle plugin for building JavaCard applets.
 
-This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) project and [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro), it is inspired by [gradle-javacard](https://github.com/fidesmo/gradle-javacard)
+This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-javacard) and [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro), it is inspired by [gradle-javacard](https://github.com/fidesmo/gradle-javacard)
 
 ## Features
 
@@ -18,6 +18,7 @@ This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-j
 * list applets
 * write quick testing scripts used to send apdu in a configurable way
 * expose `GpExec` task type that enables usage of [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool inside Gradle
+* include [jcardsim 3.0.4](https://github.com/licel/jcardsim) and [JUnit 4.12](http://junit.org/junit4/) test dependency (clear distinction between JavaCard SDK & jcardsim SDK) 
 
 ## Usage 
 
@@ -27,7 +28,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.2.0'
+        classpath 'fr.bmartel:gradle-javacard:1.2.3'
     }
 }
 
@@ -78,15 +79,11 @@ The path to JavaCard SDK can be specified through :
 
 ## Tasks
 
-* Common task
-
 | task name    | description   |
 |--------------|---------------|
 | buildJavaCard | build JavaCard cap files |
 | installJavaCard | delete existing aid & install all JavaCard cap files (`gp --delete XXXX --install file.cap`) |
 | listJavaCard | list applets (`gp -l`) |
-
-* apdu script task
 
 It's possible to create custom tasks that will send series of custom apdu :
 
