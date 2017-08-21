@@ -37,19 +37,6 @@ class GpExec extends JavaExec {
 
     static String GP_CLASSNAME = 'pro.javacard.gp.GPTool'
 
-    /**
-     * dependency of Global Platform Pro
-     */
-    def depList = [
-            'net.sf.jopt-simple:jopt-simple:5.0.4',
-            'org.bouncycastle:bcprov-jdk15on:1.57',
-            'com.google.guava:guava:22.0',
-            'com.googlecode.json-simple:json-simple:1.1.1',
-            'net.java.dev.jna:jna:4.2.1',
-            'org.slf4j:slf4j-simple:1.7.25',
-            'org.apache.ant:ant:1.8.2'
-    ]
-
     GpExec() {
         super()
         configure {
@@ -67,12 +54,6 @@ class GpExec extends JavaExec {
     def getGpClassPath(Project project) {
 
         FileCollection gproClasspath = project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
-
-        project.repositories.add(project.repositories.mavenCentral())
-
-        depList.each { item ->
-            project.dependencies.add("compile", item)
-        }
 
         gproClasspath += project.sourceSets.main.runtimeClasspath
 

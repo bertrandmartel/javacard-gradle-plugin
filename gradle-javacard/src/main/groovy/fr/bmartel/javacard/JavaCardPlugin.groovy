@@ -32,6 +32,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.tasks.testing.Test
+import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -52,6 +54,19 @@ class JavaCardPlugin implements Plugin<Project> {
 
     static String GLOBAL_PLATFORM_GROUP = 'global platform'
 
+    /**
+     * dependency of Global Platform Pro
+     */
+    def depList = [
+            'net.sf.jopt-simple:jopt-simple:5.0.4',
+            'org.bouncycastle:bcprov-jdk15on:1.57',
+            'com.google.guava:guava:22.0',
+            'com.googlecode.json-simple:json-simple:1.1.1',
+            'net.java.dev.jna:jna:4.2.1',
+            'org.slf4j:slf4j-simple:1.7.25',
+            'org.apache.ant:ant:1.8.2'
+    ]
+
     void apply(Project project) {
 
         //define plugin extension
@@ -59,9 +74,13 @@ class JavaCardPlugin implements Plugin<Project> {
 
         project.configurations {
             jcardsim
+            sctest
+            sdk
         }
 
         project.afterEvaluate {
+
+            initDependencies(project)
 
             File propertyFile = project.rootProject.file('local.properties')
 
@@ -74,38 +93,7 @@ class JavaCardPlugin implements Plugin<Project> {
             }
             logger.debug("jckit location : " + extension.config.getJcKit())
 
-            if (!project.repositories.findByName("jcardsim")) {
-                def buildRepo = project.repositories.maven {
-                    name 'jcardsim'
-                    url "http://dl.bintray.com/bertrandmartel/maven"
-                }
-                project.repositories.add(buildRepo)
-            }
-
-            //resolve the javacard framework according to SDK version
-            project.dependencies {
-                compile project.files(SdkUtils.getApiPath(extension.config.getJcKit(), logger))
-                testCompile 'junit:junit:4.12'
-                jcardsim 'com.licel:jcardsim:3.0.4'
-            }
-
-            project.sourceSets {
-                test {
-                    runtimeClasspath = project.configurations.jcardsim
-                }
-            }
-
-            extension.config.caps.each { capItem ->
-
-                if (capItem.dependencies != null) {
-                    capItem.dependencies.local.each { localItem ->
-                        project.dependencies.add("compile", project.files(localItem.jar))
-                    }
-                    capItem.dependencies.remote.each { remoteItem ->
-                        project.dependencies.add("compile", remoteItem)
-                    }
-                }
-            }
+            configureClasspath(project, extension)
 
             if (extension.scripts != null) {
 
@@ -156,6 +144,98 @@ class JavaCardPlugin implements Plugin<Project> {
         }
 
         project.build.dependsOn(build)
+    }
+
+    def initDependencies(Project project) {
+        project.repositories.add(project.repositories.mavenCentral())
+
+        depList.each { item ->
+            project.dependencies.add("compile", item)
+        }
+    }
+
+    /**
+     * Configure source set / dependency class path for main, tests and smartcard test
+     *
+     * @param project gradle project
+     * @param sdk JC SDK path
+     * @return
+     */
+    def configureClasspath(Project project, extension) {
+
+        if (!project.repositories.findByName("jcardsim")) {
+            def buildRepo = project.repositories.maven {
+                name 'jcardsim'
+                url "http://dl.bintray.com/bertrandmartel/maven"
+            }
+            project.repositories.add(buildRepo)
+        }
+
+        def testClasspath = project.configurations.jcardsim + project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
+
+        def sdkPath = project.files(SdkUtils.getApiPath(extension.config.getJcKit(), logger))
+
+        project.sourceSets {
+            main {
+                compileClasspath += project.configurations.sdk
+            }
+            test {
+                compileClasspath += testClasspath
+                runtimeClasspath += testClasspath
+            }
+            sctest {
+                java.srcDir project.file('src/sctest/java')
+                compileClasspath += testClasspath
+                runtimeClasspath += testClasspath
+                output.resourcesDir = project.file(project.buildDir.getPath() + '/sctest/res')
+                output.classesDir = project.file(project.buildDir.getPath() + '/sctest/bin')
+            }
+        }
+
+        //resolve the javacard framework according to SDK version
+        project.dependencies {
+            sdk sdkPath
+
+            jcardsim 'junit:junit:4.12'
+            jcardsim 'com.licel:jcardsim:3.0.4'
+
+            sctestCompile project.sourceSets.main.output
+            sctestCompile project.sourceSets.test.output
+
+            sctestCompile project.configurations.compile
+            sctestCompile project.configurations.testCompile
+
+            sctestRuntime project.configurations.runtime
+            sctestRuntime project.configurations.testRuntime
+        }
+
+        if (!project.tasks.findByName("sctest")) {
+            Task sctest = project.tasks.create(name: "sctest", type: Test, {
+                group = LifecycleBasePlugin.VERIFICATION_GROUP
+                description = 'Test on SmartCard device'
+                testClassesDir = project.sourceSets.sctest.output.classesDir
+                classpath = project.sourceSets.sctest.runtimeClasspath
+                testLogging {
+                    events "passed", "skipped", "failed"
+                }
+            })
+        }
+
+        project.test.testLogging {
+            events "passed", "skipped", "failed"
+        }
+
+        extension.config.caps.each { capItem ->
+
+            if (capItem.dependencies != null) {
+                capItem.dependencies.local.each { localItem ->
+                    project.dependencies.add("compile", project.files(localItem.jar))
+                }
+                capItem.dependencies.remote.each { remoteItem ->
+                    project.dependencies.add("compile", remoteItem)
+                }
+            }
+        }
     }
 
     /**
