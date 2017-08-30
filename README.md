@@ -19,6 +19,7 @@ This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-j
 * write quick testing scripts used to send apdu in a configurable way
 * expose `GpExec` task type that enables usage of [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool inside Gradle
 * include [jcardsim 3.0.4](https://github.com/licel/jcardsim) and [JUnit 4.12](http://junit.org/junit4/) test dependency (clear distinction between JavaCard SDK & jcardsim SDK) 
+* ability to specify key for delete/install/list & apdu task
 
 ## Usage 
 
@@ -28,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.3.0'
+        classpath 'fr.bmartel:gradle-javacard:1.4.0'
     }
 }
 
@@ -37,6 +38,7 @@ apply plugin: 'javacard'
 javacard {
 
     config {
+        
         cap {
             packageName 'fr.bmartel.javacard'
             version '0.1'
@@ -48,7 +50,7 @@ javacard {
             }
         }
     }
-
+          
     scripts {
         script {
             name 'select'
@@ -167,6 +169,16 @@ javacard {
             }
         }
     }
+    
+    defaultKey '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+    // or 
+    /*
+    key {
+        enc '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+        kek '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F' 
+        mac '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F' 
+    }
+    */
 
     scripts {
         script {
@@ -215,6 +227,11 @@ Note2 : you can add as many `local` or `remote` dependency as you want
           * exps [String] - path to the folder keeping .exp files. Required
           * jar [String] - path to the JAR file for compilation. Optional - only required if using sources mode and not necessary with classes mode if java code is already compiled
         * remote [String] remote dependencies (ex: "group:module:1.0").the remote repository (maven repo) must be included in the project
+  * key [Closure] key configuration (if not defined the default keys will be used)
+    * enc [String] ENC key
+    * kek [String] KEK key
+    * mac [String] MAC key
+  * defaultKey [String] default key used (will be used for enc, kek and mac key if not specified in key closure)
   * scripts [Closure] - object that holds the configurable scripts to send apdu
      * script [Closure] - a script referenced by name/apdu value to be sent
        * name [String] - script name (ex: select)

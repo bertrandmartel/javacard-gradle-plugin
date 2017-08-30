@@ -107,10 +107,12 @@ class JavaCardPlugin implements Plugin<Project> {
                         extension.scripts.scripts.each { scriptItem ->
                             if (scriptItem.name == taskIncludedScript) {
                                 command.add('-a')
-                                command.add(Utility.formatApdu(scriptItem.apdu))
+                                command.add(Utility.formatByteArray(scriptItem.apdu))
                             }
                         }
                     }
+
+                    command = Utility.addKeyArg(extension.key, extension.defaultKey, command)
 
                     if (!project.tasks.findByName(taskItem.name)) {
                         createScriptTask(project, taskItem.name, command)
@@ -120,6 +122,10 @@ class JavaCardPlugin implements Plugin<Project> {
 
             if (!project.tasks.findByName(INSTALL_TASK)) {
                 createInstallTask(project, extension)
+            }
+
+            if (!project.tasks.findByName(LIST_TASK)) {
+                createListTask(project, extension)
             }
 
             //validate the extension properties
@@ -137,10 +143,6 @@ class JavaCardPlugin implements Plugin<Project> {
             group = 'build'
             description = 'Create CAP file(s) for installation on a smart card'
             dependsOn(project.classes)
-        }
-
-        if (!project.tasks.findByName(LIST_TASK)) {
-            createListTask(project)
         }
 
         project.build.dependsOn(build)
@@ -250,7 +252,7 @@ class JavaCardPlugin implements Plugin<Project> {
         def args = ['-relax']
         extension.config.caps.each { capItem ->
             args.add('--delete')
-            args.add(Utility.formatApdu(capItem.aid))
+            args.add(Utility.formatByteArray(capItem.aid))
             args.add('--install')
 
             File file = new File(capItem.output);
@@ -260,6 +262,9 @@ class JavaCardPlugin implements Plugin<Project> {
                 args.add(new File(capItem.output).absolutePath)
             }
         }
+
+        args = Utility.addKeyArg(extension.key, extension.defaultKey, args)
+
         createGpExec(project, install, GLOBAL_PLATFORM_GROUP, 'install cap file', args)
     }
 
@@ -269,9 +274,14 @@ class JavaCardPlugin implements Plugin<Project> {
      * @param project gradle project
      * @return
      */
-    def createListTask(Project project) {
+    def createListTask(Project project, extension) {
+
+        def args = ['-l']
+
+        args = Utility.addKeyArg(extension.key, extension.defaultKey, args)
+
         def script = project.tasks.create(name: LIST_TASK, type: GpExec)
-        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'apdu script', ['-l'])
+        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'list applets', args)
     }
 
     /**

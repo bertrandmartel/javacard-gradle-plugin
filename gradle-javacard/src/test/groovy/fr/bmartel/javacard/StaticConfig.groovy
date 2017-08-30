@@ -67,9 +67,148 @@ class StaticConfig {
                 }
             }
         }
+
+        key {
+            enc '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            kek '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            mac '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+        }
+    }
+
+    public static Closure VALID_CONFIG_MIXED_KEY = {
+        config {
+            jckit SDK_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:2.1.1'
+                }
+            }
+        }
+
+        defaultKey '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+
+        key {
+            enc '41:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            kek '42:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+        }
     }
 
     public static Closure VALID_SCRIPT_CONFIG = {
+        config {
+            jckit SDK_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:2.1.1'
+                }
+            }
+        }
+
+        scripts {
+            script {
+                name 'script1'
+                apdu '010203'
+            }
+            script {
+                name 'script2'
+                apdu '040506'
+            }
+            task {
+                name 'task1'
+                scripts 'script1', 'script2'
+            }
+            task {
+                name 'task2'
+                scripts 'script1'
+            }
+            task {
+                name 'task3'
+                scripts 'script2'
+            }
+        }
+    }
+
+    public static Closure VALID_SCRIPT_CONFIG_DEFAULT_KEY = {
+
+        defaultKey '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+
+        config {
+            jckit SDK_PATH
+            cap {
+                jckit SDK_PATH
+                packageName 'fr.bmartel.javacard'
+                version '0.1'
+                aid '01:02:03:04:05:06:07:08:09'
+                output 'applet.cap'
+                applet {
+                    className 'fr.bmartel.javacard.HelloWorld'
+                    aid '01:02:03:04:05:06:07:08:09:01:02'
+                }
+                dependencies {
+                    local {
+                        jar DEPENDENCY_PATH
+                        exps EXP_PATH
+                    }
+                    remote 'fr.bmartel:gplatform:2.1.1'
+                }
+            }
+        }
+
+        scripts {
+            script {
+                name 'script1'
+                apdu '010203'
+            }
+            script {
+                name 'script2'
+                apdu '040506'
+            }
+            task {
+                name 'task1'
+                scripts 'script1', 'script2'
+            }
+            task {
+                name 'task2'
+                scripts 'script1'
+            }
+            task {
+                name 'task3'
+                scripts 'script2'
+            }
+        }
+    }
+
+    public static Closure VALID_SCRIPT_CONFIG_WITH_KEY = {
+        key {
+            enc '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            kek '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            mac '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+        }
         config {
             jckit SDK_PATH
             cap {

@@ -79,7 +79,47 @@ class Utility {
         zip.close()
     }
 
-    static String formatApdu(apdu) {
+    static String formatByteArray(apdu) {
         return apdu.replaceAll(':', '')
+    }
+
+    /**
+     * Add keys to GPExec arguments.
+     *
+     * @param key
+     * @param args
+     * @return
+     */
+    static String[] addKeyArg(key, defaultKey, args) {
+        if (key != null || defaultKey != null) {
+
+            //set key-enc if specified otherwise set default key
+            if (key != null && key.keyEnc != null) {
+                args.add('-key-enc')
+                args.add(Utility.formatByteArray(key.keyEnc))
+            } else if (defaultKey != null) {
+                args.add('-key-enc')
+                args.add(Utility.formatByteArray(defaultKey))
+            }
+
+            //set key-mac if specified otherwise set default key
+            if (key != null && key.keyMac != null) {
+                args.add('-key-mac')
+                args.add(Utility.formatByteArray(key.keyMac))
+            } else if (defaultKey != null) {
+                args.add('-key-mac')
+                args.add(Utility.formatByteArray(defaultKey))
+            }
+
+            //set key-kek if specified otherwise set default key
+            if (key != null && key.keyKek != null) {
+                args.add('-key-kek')
+                args.add(Utility.formatByteArray(key.keyKek))
+            } else if (defaultKey != null) {
+                args.add('-key-kek')
+                args.add(Utility.formatByteArray(defaultKey))
+            }
+        }
+        return args
     }
 }

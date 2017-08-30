@@ -150,6 +150,14 @@ class JavaCardPluginTest {
                 }
             }
 
+            defaultKey '39:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+
+            key {
+                enc '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+                kek '50:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+                mac '60:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F'
+            }
+
             scripts {
 
                 script {
@@ -200,6 +208,12 @@ class JavaCardPluginTest {
         assertEquals(task.getJavaCard().config.caps[0].dependencies.remote.size(), 1)
         assertEquals(task.getJavaCard().scripts.scripts.size(), 2)
         assertEquals(task.getJavaCard().scripts.tasks.size(), 2)
+
+        assertEquals(task.getJavaCard().defaultKey, '39:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F')
+
+        assertEquals(task.getJavaCard().key.keyEnc, '40:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F')
+        assertEquals(task.getJavaCard().key.keyKek, '50:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F')
+        assertEquals(task.getJavaCard().key.keyMac, '60:41:42:43:44:45:46:47:48:49:4A:4B:4C:4D:4E:4F')
 
         assertEquals(task.getJavaCard().scripts.scripts[0].name, projectTest.scripts.script1.name)
         assertEquals(task.getJavaCard().scripts.scripts[0].apdu, projectTest.scripts.script1.apdu)

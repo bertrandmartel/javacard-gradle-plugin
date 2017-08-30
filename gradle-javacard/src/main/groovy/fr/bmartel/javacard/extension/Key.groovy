@@ -25,55 +25,36 @@
 package fr.bmartel.javacard.extension
 
 /**
- * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
+ * Key extension.
  *
  * @author Bertrand Martel
  */
-class JavaCard {
+class Key {
 
-    Config config
-
-    Scripts scripts
-
-    Key key
-
-    String defaultKey
-
-    Config config(Closure closure) {
-        def someConfig = new Config()
-        closure.delegate = someConfig
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        config = someConfig
-        return someConfig
-    }
-
-    Scripts scripts(Closure closure) {
-        def someScript = new Scripts()
-        closure.delegate = someScript
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        scripts = someScript
-        return someScript
-    }
-
-    Key key(Closure closure) {
-        def someKey = new Key()
-        closure.delegate = someKey
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure.call()
-        key = someKey
-        return someKey
-    }
-
-    void defaultKey(String key) {
-        this.defaultKey = key
-    }
-    
     /**
-     * Validate fields
+     * key ENC
      */
-    def validate() {
-        config.validate()
+    String keyEnc
+
+    /**
+     * key MAC
+     */
+    String keyMac
+
+    /**
+     * key KEK
+     */
+    String keyKek
+
+    void enc(String key) {
+        this.keyEnc = key
+    }
+
+    void mac(String key) {
+        this.keyMac = key
+    }
+
+    void kek(String key) {
+        this.keyKek = key
     }
 }
