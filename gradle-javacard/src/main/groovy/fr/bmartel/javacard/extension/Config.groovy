@@ -123,6 +123,9 @@ class Config {
             if (!folder.exists()) {
                 throw new InvalidUserDataException('Invalid JavaCard SDK path')
             }
+            if (!folder.isAbsolute()) {
+                jckit = folder.getAbsolutePath()
+            }
         } else if (caps.size() > 0) {
             caps.each { capItem ->
                 if (!capItem.jckit?.trim() && !System.env['JC_HOME']) {

@@ -19,7 +19,7 @@ This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-j
 * write quick testing scripts used to send apdu in a configurable way
 * expose `GpExec` task type that enables usage of [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool inside Gradle
 * include [jcardsim 3.0.4](https://github.com/licel/jcardsim) and [JUnit 4.12](http://junit.org/junit4/) test dependency (clear distinction between JavaCard SDK & jcardsim SDK) 
-* ability to specify key for delete/install/list & apdu task
+* ability to specify key for delete/install/list tasks
 
 ## Usage 
 
@@ -29,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.4.0'
+        classpath 'fr.bmartel:gradle-javacard:1.4.1'
     }
 }
 
@@ -69,6 +69,8 @@ javacard {
 ```
 
 plugin is available from `jcenter()` or `mavenCentral()`
+
+Check [this project](https://github.com/bertrandmartel/javacard-tutorial) for more usage examples
 
 ## JavaCard SDK path
 
@@ -136,7 +138,7 @@ repositories {
 javacard {
 
     config {
-        jckit "../oracle_javacard_sdks/jc222_kit"
+        jckit "oracle_javacard_sdks/jc222_kit"
         cap {
             packageName 'fr.bmartel.javacard'
             version '0.1'
