@@ -112,8 +112,6 @@ class JavaCardPlugin implements Plugin<Project> {
                         }
                     }
 
-                    command = Utility.addKeyArg(extension.key, extension.defaultKey, command)
-
                     if (!project.tasks.findByName(taskItem.name)) {
                         createScriptTask(project, taskItem.name, command)
                     }
