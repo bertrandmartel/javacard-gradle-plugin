@@ -29,7 +29,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.4.1'
+        classpath 'fr.bmartel:gradle-javacard:1.5.0'
     }
 }
 
@@ -138,7 +138,7 @@ repositories {
 javacard {
 
     config {
-        jckit "oracle_javacard_sdks/jc222_kit"
+        jckit '../oracle_javacard_sdks/jc222_kit'
         cap {
             packageName 'fr.bmartel.javacard'
             version '0.1'
@@ -206,7 +206,7 @@ Note2 : you can add as many `local` or `remote` dependency as you want
 
 * javacard [Closure]
   * config [Closure] - object that holds build configuration **Required**
-    * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise
+    * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise. The path is relative to the module
     * logLevel [String] - log level of ant-javacard task ("VERBOSE","DEBUG","INFO","WARN","ERROR"). default : "INFO"
     * cap [Closure] - construct a CAP file **Required**
       * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
@@ -241,6 +241,16 @@ Note2 : you can add as many `local` or `remote` dependency as you want
      * task [Closure] - gradle task to create that will map the specified list of apdu to send
        * name [String] - task name
        * scripts [String...] - list of script's name
+
+## Compatibility
+
+This plugin has been tested on following IDE : 
+
+* IntelliJ IDEA
+* Android Studio
+* Eclipse
+
+Recommended IDE : IntelliJ IDEA or Android Studio
 
 ## License
 
