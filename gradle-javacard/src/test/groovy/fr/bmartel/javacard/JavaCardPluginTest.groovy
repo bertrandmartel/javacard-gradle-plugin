@@ -107,12 +107,6 @@ class JavaCardPluginTest {
         def task = project.getTasks().findByPath('buildJavaCard')
         assertThat(task, instanceOf(JavaCardBuildTask))
         assertThat(task.group, equalTo('build'))
-        assertThat(task.dependsOn, hasItem(project.classes))
-    }
-
-    @Test
-    void checkDependsSetup() {
-        assertThat(project.build.dependsOn, hasItem(project.buildJavaCard))
     }
 
     @Test

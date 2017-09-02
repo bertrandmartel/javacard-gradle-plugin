@@ -3,7 +3,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'groovy'
 
 group 'fr.bmartel'
-version '1.4.1'
+version '1.5.0'
 
 apply plugin: 'java'
 
@@ -18,7 +18,8 @@ dependencies {
     compile gradleApi()
     compile 'net.sf.jopt-simple:jopt-simple:5.0.4'
     compile 'org.bouncycastle:bcprov-jdk15on:1.57'
-    compile 'com.google.guava:guava:22.0'
+    compile 'org.bouncycastle:bcprov-jdk14:1.50'
+    compile 'com.google.guava:guava:18.0'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'org.apache.ant:ant:1.8.2'
     compile 'net.java.dev.jna:jna:4.2.1'

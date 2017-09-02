@@ -32,8 +32,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.tasks.testing.Test
-import org.gradle.language.base.plugins.LifecycleBasePlugin
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -59,8 +57,9 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def depList = [
             'net.sf.jopt-simple:jopt-simple:5.0.4',
+            'com.google.guava:guava:18.0',
             'org.bouncycastle:bcprov-jdk15on:1.57',
-            'com.google.guava:guava:22.0',
+            'org.bouncycastle:bcprov-jdk14:1.50',
             'com.googlecode.json-simple:json-simple:1.1.1',
             'net.java.dev.jna:jna:4.2.1',
             'org.slf4j:slf4j-simple:1.7.25',
@@ -79,6 +78,9 @@ class JavaCardPlugin implements Plugin<Project> {
         }
 
         project.afterEvaluate {
+
+            //validate the extension properties
+            extension.validate(project)
 
             initDependencies(project)
 
@@ -125,9 +127,6 @@ class JavaCardPlugin implements Plugin<Project> {
             if (!project.tasks.findByName(LIST_TASK)) {
                 createListTask(project, extension)
             }
-
-            //validate the extension properties
-            extension.validate()
         }
 
         //apply the java plugin if not defined
@@ -140,8 +139,27 @@ class JavaCardPlugin implements Plugin<Project> {
         build.configure {
             group = 'build'
             description = 'Create CAP file(s) for installation on a smart card'
-            dependsOn(project.classes)
         }
+
+        def preBuild = project.tasks.create('preBuild', {
+            def imlFile = project.file(project.name + ".iml")
+            try {
+                def parsedXml = (new XmlParser()).parse(imlFile)
+                if (parsedXml != null && parsedXml.component.size() > 0 && parsedXml.component[1] != null) {
+                    def testNode = parsedXml.component[1].orderEntry.find { it.'@name' =~ /^api*/ }
+                    parsedXml.component[1].remove(testNode)
+                    new Node(parsedXml.component[1], 'orderEntry', [
+                            'type' : testNode.attributes().get("type"),
+                            'name' : testNode.attributes().get("name"),
+                            'level': testNode.attributes().get("level")
+                    ])
+                    groovy.xml.XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+                }
+            } catch (FileNotFoundException e) {
+            }
+        })
+
+        build.dependsOn preBuild
 
         project.build.dependsOn(build)
     }
@@ -183,13 +201,6 @@ class JavaCardPlugin implements Plugin<Project> {
                 compileClasspath += testClasspath
                 runtimeClasspath += testClasspath
             }
-            sctest {
-                java.srcDir project.file('src/sctest/java')
-                compileClasspath += testClasspath
-                runtimeClasspath += testClasspath
-                output.resourcesDir = project.file(project.buildDir.getPath() + '/sctest/res')
-                output.classesDir = project.file(project.buildDir.getPath() + '/sctest/bin')
-            }
         }
 
         //resolve the javacard framework according to SDK version
@@ -199,26 +210,9 @@ class JavaCardPlugin implements Plugin<Project> {
             jcardsim 'junit:junit:4.12'
             jcardsim 'com.licel:jcardsim:3.0.4'
 
-            sctestCompile project.sourceSets.main.output
-            sctestCompile project.sourceSets.test.output
+            compile sdkPath
 
-            sctestCompile project.configurations.compile
-            sctestCompile project.configurations.testCompile
-
-            sctestRuntime project.configurations.runtime
-            sctestRuntime project.configurations.testRuntime
-        }
-
-        if (!project.tasks.findByName("sctest")) {
-            Task sctest = project.tasks.create(name: "sctest", type: Test, {
-                group = LifecycleBasePlugin.VERIFICATION_GROUP
-                description = 'Test on SmartCard device'
-                testClassesDir = project.sourceSets.sctest.output.classesDir
-                classpath = project.sourceSets.sctest.runtimeClasspath
-                testLogging {
-                    events "passed", "skipped", "failed"
-                }
-            })
+            testCompile testClasspath
         }
 
         project.test.testLogging {
@@ -263,7 +257,7 @@ class JavaCardPlugin implements Plugin<Project> {
 
         args = Utility.addKeyArg(extension.key, extension.defaultKey, args)
 
-        createGpExec(project, install, GLOBAL_PLATFORM_GROUP, 'install cap file', args)
+        createGpExec(install, GLOBAL_PLATFORM_GROUP, 'install cap file', args)
     }
 
     /**
@@ -279,7 +273,7 @@ class JavaCardPlugin implements Plugin<Project> {
         args = Utility.addKeyArg(extension.key, extension.defaultKey, args)
 
         def script = project.tasks.create(name: LIST_TASK, type: GpExec)
-        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'list applets', args)
+        createGpExec(script, GLOBAL_PLATFORM_GROUP, 'list applets', args)
     }
 
     /**
@@ -292,7 +286,7 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def createScriptTask(Project project, String taskName, args) {
         def script = project.tasks.create(name: taskName, type: GpExec)
-        createGpExec(project, script, GLOBAL_PLATFORM_GROUP, 'apdu script', args)
+        createGpExec(script, GLOBAL_PLATFORM_GROUP, 'apdu script', args)
     }
 
     /**
@@ -305,7 +299,7 @@ class JavaCardPlugin implements Plugin<Project> {
      * @param arguments arguments to gp tool
      * @return
      */
-    def createGpExec(Project project, Task task, String grp, String desc, arguments) {
+    def createGpExec(Task task, String grp, String desc, arguments) {
         task.configure {
             group = grp
             description = desc
@@ -313,7 +307,6 @@ class JavaCardPlugin implements Plugin<Project> {
             doFirst {
                 println('gp ' + arguments)
             }
-            dependsOn(project.jar)
         }
     }
 }

@@ -24,6 +24,8 @@
 
 package fr.bmartel.javacard.extension
 
+import org.gradle.api.Project
+
 /**
  * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
  *
@@ -73,7 +75,7 @@ class JavaCard {
     /**
      * Validate fields
      */
-    def validate() {
-        config.validate()
+    def validate(Project project) {
+        config.validate(project)
     }
 }

@@ -25,6 +25,7 @@
 package fr.bmartel.javacard.extension
 
 import org.gradle.api.InvalidUserDataException
+import org.gradle.api.Project
 
 /**
  * JavaCard extension object (the same as defined in https://github.com/martinpaljak/ant-javacard#syntax
@@ -68,8 +69,8 @@ class Config {
     /**
      * Validate fields
      */
-    def validate() {
-        checkJckit()
+    def validate(Project project) {
+        checkJckit(project)
         checkOutput()
         checkAppletClass()
         checkDependency()
@@ -117,24 +118,23 @@ class Config {
 /**
  * Check that jckit is defined either in the root javacard object or in all caps object if not in environment variable.
  */
-    def checkJckit() {
+    def checkJckit(Project project) {
         if (jckit?.trim()) {
-            def folder = new File(jckit)
+            def folder = project.file(jckit)
             if (!folder.exists()) {
-                throw new InvalidUserDataException('Invalid JavaCard SDK path')
+                throw new InvalidUserDataException('Invalid JavaCard SDK path : ' + folder.getAbsolutePath())
             }
-            if (!folder.isAbsolute()) {
-                jckit = folder.getAbsolutePath()
-            }
+            jckit = folder.getAbsolutePath()
         } else if (caps.size() > 0) {
             caps.each { capItem ->
                 if (!capItem.jckit?.trim() && !System.env['JC_HOME']) {
                     throw new InvalidUserDataException('Invalid JavaCard SDK path : use JC_HOME or jckit')
                 } else if (capItem.jckit?.trim() && !System.env['JC_HOME']) {
-                    def folder = new File(capItem.jckit)
+                    def folder = project.file(capItem.jckit)
                     if (!folder.exists()) {
-                        throw new InvalidUserDataException('Invalid JavaCard SDK path')
+                        throw new InvalidUserDataException('Invalid JavaCard SDK path : ' + folder.getAbsolutePath())
                     }
+                    capItem.jckit = folder.getAbsolutePath()
                 }
             }
         } else {
