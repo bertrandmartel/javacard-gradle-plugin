@@ -52,6 +52,8 @@ class JavaCardPlugin implements Plugin<Project> {
 
     static String GLOBAL_PLATFORM_GROUP = 'global platform'
 
+    Task buildTask
+
     /**
      * dependency of Global Platform Pro
      */
@@ -134,9 +136,9 @@ class JavaCardPlugin implements Plugin<Project> {
             project.plugins.apply(JavaPlugin)
         }
 
-        def build = project.tasks.create(BUILD_TASK, JavaCardBuildTask)
+        buildTask = project.tasks.create(BUILD_TASK, JavaCardBuildTask)
 
-        build.configure {
+        buildTask.configure {
             group = 'build'
             description = 'Create CAP file(s) for installation on a smart card'
         }
@@ -159,9 +161,9 @@ class JavaCardPlugin implements Plugin<Project> {
             }
         })
 
-        build.dependsOn preBuild
+        buildTask.dependsOn preBuild
 
-        project.build.dependsOn(build)
+        project.build.dependsOn(buildTask)
     }
 
     def initDependencies(Project project) {
@@ -254,6 +256,8 @@ class JavaCardPlugin implements Plugin<Project> {
                 args.add(new File(capItem.output).absolutePath)
             }
         }
+
+        install.dependsOn buildTask
 
         args = Utility.addKeyArg(extension.key, extension.defaultKey, args)
 

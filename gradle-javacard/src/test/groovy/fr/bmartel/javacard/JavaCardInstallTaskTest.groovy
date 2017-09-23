@@ -6,20 +6,9 @@ import org.gradle.api.tasks.JavaExec
 import org.junit.Test
 
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertThat
+import static org.hamcrest.Matchers.*
 
 class JavaCardInstallTaskTest extends CommonTest {
 
@@ -27,8 +16,10 @@ class JavaCardInstallTaskTest extends CommonTest {
     void validBuildInstall() {
         runBuildTask(StaticConfig.VALID_CONFIG)
         JavaExec installTask = project.getTasks().getByName("installJavaCard")
+        Task buildTask = project.getTasks().getByName("buildJavaCard")
         assertTrue(installTask ? true : false)
         assertTrue(installTask instanceof JavaExec)
+        assertThat(installTask.dependsOn, hasItem(buildTask))
         assertEquals(installTask.group, 'global platform')
         assertEquals(installTask.args, ['-relax',
                                         '--delete', '010203040506070809',
