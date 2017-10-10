@@ -20,6 +20,7 @@ This plugin is a wrapper on [ant-javacard](https://github.com/martinpaljak/ant-j
 * expose `GpExec` task type that enables usage of [Global Platform Pro](https://github.com/martinpaljak/GlobalPlatformPro) tool inside Gradle
 * include [jcardsim 3.0.4](https://github.com/licel/jcardsim) and [JUnit 4.12](http://junit.org/junit4/) test dependency (clear distinction between JavaCard SDK & jcardsim SDK) 
 * ability to specify key for delete/install/list tasks
+* possibility to add dependency between modules (exp & jar imported automatically)
 
 ## Usage 
 
@@ -29,7 +30,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.5.2'
+        classpath 'fr.bmartel:gradle-javacard:1.5.3'
     }
 }
 

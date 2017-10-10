@@ -27,7 +27,9 @@ package fr.bmartel.javacard
 import com.sun.media.sound.InvalidDataException
 import fr.bmartel.javacard.extension.JavaCard
 import fr.bmartel.javacard.util.Utility
+import groovy.io.FileType
 import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -62,9 +64,33 @@ class JavaCardBuildTask extends DefaultTask {
                 updateOutputFilePath(capItem)
 
                 cap(buildCapMap(capItem)) {
-
                     capItem.applets.each() { appletItem ->
                         applet(buildAppletMap(appletItem))
+                    }
+
+                    // for each dependent project add an import with exp folder & jar
+                    getAllDependentProjects(project).each {
+                        def expFolder = ""
+                        def jarPath = ""
+
+                        new File(it.ext.javacardDir).eachFile() {
+                            if (it.isDirectory()) {
+                                expFolder = it.absolutePath
+                                it.eachFileMatch(FileType.ANY, ~/.*\.jar/) {
+                                    jarPath = it.absolutePath
+                                }
+                            }
+                        }
+
+                        logger.debug("import attributes : " + [
+                                exps: expFolder,
+                                jar : jarPath
+                        ])
+
+                        "import"([
+                                exps: expFolder,
+                                jar : jarPath
+                        ])
                     }
 
                     if (capItem.dependencies != null) {
@@ -154,6 +180,21 @@ class JavaCardBuildTask extends DefaultTask {
         }
         logger.debug("applet attributes : " + map)
         return map
+    }
+
+    /**
+     * Get all dependent project : https://discuss.gradle.org/t/getting-all-project-dependencies/6540/2 by Ahsan_Rabbani
+     *
+     * @param project
+     * @return
+     */
+    def getAllDependentProjects(project) {
+        def projectDependencies = project.configurations.runtime.getAllDependencies().withType(ProjectDependency)
+        def dependentProjects = projectDependencies*.dependencyProject
+        if (dependentProjects.size > 0) {
+            dependentProjects.each { dependentProjects += getAllDependentProjects(it) }
+        }
+        return dependentProjects.unique()
     }
 
     /**

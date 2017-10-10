@@ -161,9 +161,12 @@ class JavaCardPlugin implements Plugin<Project> {
             }
         })
 
-        buildTask.dependsOn preBuild
+        //task ordering
+        preBuild.finalizedBy buildTask
+        project.classes.finalizedBy preBuild
 
-        project.build.dependsOn(buildTask)
+        //add property : javacard output directory
+        project.ext.javacardDir = project.buildDir.absolutePath + File.separator + "javacard"
     }
 
     def initDependencies(Project project) {
