@@ -88,14 +88,20 @@ class JavaCardPlugin implements Plugin<Project> {
 
             File propertyFile = project.rootProject.file('local.properties')
 
+            Properties properties = new Properties()
             if (propertyFile.exists()) {
-                Properties properties = new Properties()
                 properties.load(propertyFile.newDataInputStream())
                 if (properties.getProperty('jc.home')?.trim()) {
                     extension.config.jckit = properties.getProperty('jc.home')
                 }
             }
+
+            if (!extension.config.jcardSim) {
+                extension.config.jcardSim = getJcardSim(properties)
+            }
+
             logger.debug("jckit location : " + extension.config.getJcKit())
+            logger.debug("jcardsim: " + extension.config.getJcardSim())
 
             configureClasspath(project, extension)
 
@@ -178,6 +184,27 @@ class JavaCardPlugin implements Plugin<Project> {
     }
 
     /**
+     * Tries to determine jcardsim version to use
+     * @param properties
+     * @return
+     */
+    def getJcardSim(properties){
+        if (System.env['JCARDSIM_VER']?.trim()) {
+            return System.env['JCARDSIM_VER']
+        }
+
+        if (properties.getProperty('jcardsim.ver')?.trim()) {
+            return properties.getProperty('jcardsim.ver')
+        }
+
+        if (System.getProperty("jcardsim.ver")?.trim()){
+            return System.getProperty("jcardsim.ver")
+        }
+
+        return 'com.licel:jcardsim:3.0.4'
+    }
+
+    /**
      * Configure source set / dependency class path for main, tests and smartcard test
      *
      * @param project gradle project
@@ -186,12 +213,13 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def configureClasspath(Project project, extension) {
 
-        if (!project.repositories.findByName("jcardsim")) {
+        if (extension.config.addSurrogateJcardSimRepo && !project.repositories.findByName("jcardsim")) {
             def buildRepo = project.repositories.maven {
                 name 'jcardsim'
                 url "http://dl.bintray.com/bertrandmartel/maven"
             }
             project.repositories.add(buildRepo)
+            logger.debug("jcardsim repo added")
         }
 
         def testClasspath = project.configurations.jcardsim + project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
@@ -212,8 +240,13 @@ class JavaCardPlugin implements Plugin<Project> {
         project.dependencies {
             sdk sdkPath
 
-            jcardsim 'junit:junit:4.12'
-            jcardsim 'com.licel:jcardsim:3.0.4'
+            if (extension.config.addImplicitJcardSimJunit) {
+                jcardsim 'junit:junit:4.12'
+            }
+            if (extension.config.addImplicitJcardSim) {
+                jcardsim extension.config.getJcardSim()
+                logger.debug("jcardsim implicit added")
+            }
 
             compile sdkPath
 
