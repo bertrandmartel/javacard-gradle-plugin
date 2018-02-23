@@ -42,6 +42,16 @@ class Cap {
     String sources
 
     /**
+     * If true the sources are determined automatically. The first existing source dir in source sets is taken.
+     */
+    boolean findSources = true
+
+    /**
+     * if true the first source dir from the source set is used. Otherwise the most recet (last).
+     */
+    boolean defaultSources = true
+
+    /**
      * path to pre-compiled class files to be assembled into a CAP file. If both classes and sources are specified,
      * compiled class files will be put to classes folder, which is created if missing.
      */
@@ -126,6 +136,14 @@ class Cap {
 
     void sources(String path) {
         this.sources = path
+    }
+
+    void findSources(Boolean findSources) {
+        this.findSources = findSources
+    }
+
+    void defaultSources(Boolean defaultSources) {
+        this.defaultSources = defaultSources
     }
 
     void packageName(String packageName) {

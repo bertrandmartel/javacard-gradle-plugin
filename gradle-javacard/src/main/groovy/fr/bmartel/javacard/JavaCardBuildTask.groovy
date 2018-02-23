@@ -29,6 +29,7 @@ import fr.bmartel.javacard.extension.JavaCard
 import fr.bmartel.javacard.util.Utility
 import groovy.io.FileType
 import org.gradle.api.DefaultTask
+import org.gradle.api.InvalidUserDataException
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.tasks.TaskAction
 
@@ -248,11 +249,33 @@ class JavaCardBuildTask extends DefaultTask {
      * @param capItem cap object
      */
     def updateOutputFilePath(capItem) {
-
         if (!capItem.sources?.trim()) {
-            capItem.sources = project.sourceSets.main.java.srcDirs[0]
+
+            // Finding first source match
+            if (capItem.findSources) {
+                def folderFound = false
+                def folderIdx = 0
+                for(curSrcDir in project.sourceSets.main.java.srcDirs){
+                    if (curSrcDir.exists() && (capItem.defaultSources || folderIdx > 0)) {
+                        folderFound = true
+                        capItem.sources = curSrcDir
+                        break
+                    }
+                    folderIdx += 1
+                }
+
+                if (!folderFound){
+                    throw new InvalidUserDataException('Applet sources not found : ' + project.sourceSets.main.java.srcDirs[0])
+                }
+
+            } else {
+                def srcIndex = capItem.defaultSources ? 0 : project.sourceSets.main.java.srcDirs.size() - 1;
+                capItem.sources = project.sourceSets.main.java.srcDirs[srcIndex]
+            }
+
             logger.debug('update source path to ' + capItem.sources)
         }
+
         File file = new File(capItem.output);
         if (!file.isAbsolute()) {
             Utility.createFolder(jcBuildDir)
