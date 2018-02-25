@@ -39,6 +39,11 @@ class Config {
      */
     String jckit
 
+    Object jcardSim
+    boolean addSurrogateJcardSimRepo = true
+    boolean addImplicitJcardSim = true
+    boolean addImplicitJcardSimJunit = true
+
     /**
      * log level to set to "VERBOSE","DEBUG","INFO","WARN" or "ERROR", default is "INFO"
      */
@@ -64,6 +69,22 @@ class Config {
 
     void logLevel(String logLevel) {
         this.logLevel = logLevel
+    }
+
+    void jcardSim(Object jcardSim) {
+        this.jcardSim = jcardSim
+    }
+
+    void addSurrogateJcardSimRepo(Boolean addIt) {
+        this.addSurrogateJcardSimRepo = addIt
+    }
+
+    void addImplicitJcardSim(Boolean addIt) {
+        this.addImplicitJcardSim = addIt
+    }
+
+    void addImplicitJcardSimJunit(Boolean addIt) {
+        this.addImplicitJcardSimJunit = addIt
     }
 
     /**
