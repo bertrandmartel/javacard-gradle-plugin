@@ -41,6 +41,8 @@ class JavaCard {
 
     String defaultKey
 
+    Test test
+
     Config config(Closure closure) {
         def someConfig = new Config()
         closure.delegate = someConfig
@@ -59,6 +61,15 @@ class JavaCard {
         return someScript
     }
 
+    Test test(Closure closure) {
+        def someTest = new Test()
+        closure.delegate = someTest
+        closure.resolveStrategy = Closure.DELEGATE_FIRST
+        closure.call()
+        test = someTest
+        return someTest
+    }
+
     Key key(Closure closure) {
         def someKey = new Key()
         closure.delegate = someKey
@@ -71,7 +82,7 @@ class JavaCard {
     void defaultKey(String key) {
         this.defaultKey = key
     }
-    
+
     /**
      * Validate fields
      */

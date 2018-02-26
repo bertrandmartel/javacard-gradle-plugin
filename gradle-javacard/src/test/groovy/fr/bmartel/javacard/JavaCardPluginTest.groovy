@@ -93,6 +93,13 @@ class JavaCardPluginTest {
                             name   : 'task2',
                             scripts: ['script1', 'script2']
                     ]
+            ],
+            test   : [
+                    dependencies:
+                            [
+                                    'junit:junit:4.12',
+                                    'com.licel:jcardsim:3.0.4'
+                            ]
             ]
     ]
 
@@ -141,6 +148,13 @@ class JavaCardPluginTest {
                             jar projectTest.caps.cap1.dependencies.local.jar
                         }
                     }
+                }
+            }
+
+            test {
+                dependencies {
+                    compile 'junit:junit:4.12'
+                    compile 'com.licel:jcardsim:3.0.4'
                 }
             }
 
@@ -223,5 +237,8 @@ class JavaCardPluginTest {
         assertEquals(task.getJavaCard().scripts.tasks[1].scripts.size(), 2)
         assertEquals(task.getJavaCard().scripts.tasks[1].scripts[0], projectTest.scripts.task2.scripts[0])
         assertEquals(task.getJavaCard().scripts.tasks[1].scripts[1], projectTest.scripts.task2.scripts[1])
+
+        assertEquals(task.getJavaCard().test.dependencies.dependencies[0], projectTest.test.dependencies[0])
+        assertEquals(task.getJavaCard().test.dependencies.dependencies[1], projectTest.test.dependencies[1])
     }
 }
