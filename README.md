@@ -208,10 +208,6 @@ Note2 : you can add as many `local` or `remote` dependency as you want
 * javacard [Closure]
   * config [Closure] - object that holds build configuration **Required**
     * jckit [String] - path to the JavaCard SDK that is used if individual cap does not specify one. Optional if cap defines one, required otherwise. The path is relative to the module
-    * jcardSim [String|Map] - optional JcardSim dependency definition, requires addImplicitJcardSim=true
-    * addSurrogateJcardSimRepo [Boolean] - if true (default) the surrogate maven repo with JcardSim 3.0.4 is added
-    * addImplicitJcardSim [Boolean] - if true (default) the JcardSim is added to the test target by the plugin. If set to false user can specify own JcardSim dependency, such as: `jcardsim 'com.licel:jcardsim:3.0.4'`. 
-    * addImplicitJcardSimJunit [Boolean] - if true (default) the JcardSim dependency junit is added by the plugin.
     * logLevel [String] - log level of ant-javacard task ("VERBOSE","DEBUG","INFO","WARN","ERROR"). default : "INFO"
     * cap [Closure] - construct a CAP file **Required**
       * jckit [String] - path to the JavaCard SDK to be used for this CAP. *Optional if javacard defines one, required otherwise*
@@ -246,6 +242,20 @@ Note2 : you can add as many `local` or `remote` dependency as you want
      * task [Closure] - gradle task to create that will map the specified list of apdu to send
        * name [String] - task name
        * scripts [String...] - list of script's name
+  * test [Closure] - additional configuration for tests(*)
+     * dependencies [Closure] - holds test dependencies
+       * compile [String] - add a dependencies (ex: 'junit:junit:4.12')
+
+(*) If you specify at least one dependency, jcardsim & junit won't be automatically added so you will need to add them manually if you need them for example :
+
+```groovy
+test {
+    dependencies {
+        compile 'junit:junit:4.12'
+        compile 'com.licel:jcardsim:3.0.4'
+    }
+}
+```
 
 ## Compatibility
 
