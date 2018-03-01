@@ -244,36 +244,43 @@ class JavaCardBuildTask extends DefaultTask {
     }
 
     /**
+     * Finds first available source set match
+     * @param capItem
+     * @return
+     */
+    def findDefaultSources(capItem){
+        if (capItem.findSources) {
+            def folderFound = false
+            def folderIdx = 0
+            for(curSrcDir in project.sourceSets.main.java.srcDirs){
+                if (curSrcDir.exists() && (capItem.defaultSources || folderIdx > 0)) {
+                    folderFound = true
+                    capItem.sources = curSrcDir
+                    break
+                }
+                folderIdx += 1
+            }
+
+            if (!folderFound){
+                throw new InvalidUserDataException('Applet sources not found : ' + project.sourceSets.main.java.srcDirs[0])
+            }
+
+        } else {
+            def srcIndex = capItem.defaultSources ? 0 : project.sourceSets.main.java.srcDirs.size() - 1;
+            capItem.sources = project.sourceSets.main.java.srcDirs[srcIndex]
+        }
+
+        logger.debug('update source path to ' + capItem.sources)
+    }
+
+    /**
      * Update output file path inclusing cap, exp and jca
      *
      * @param capItem cap object
      */
     def updateOutputFilePath(capItem) {
         if (!capItem.sources?.trim()) {
-
-            // Finding first source match
-            if (capItem.findSources) {
-                def folderFound = false
-                def folderIdx = 0
-                for(curSrcDir in project.sourceSets.main.java.srcDirs){
-                    if (curSrcDir.exists() && (capItem.defaultSources || folderIdx > 0)) {
-                        folderFound = true
-                        capItem.sources = curSrcDir
-                        break
-                    }
-                    folderIdx += 1
-                }
-
-                if (!folderFound){
-                    throw new InvalidUserDataException('Applet sources not found : ' + project.sourceSets.main.java.srcDirs[0])
-                }
-
-            } else {
-                def srcIndex = capItem.defaultSources ? 0 : project.sourceSets.main.java.srcDirs.size() - 1;
-                capItem.sources = project.sourceSets.main.java.srcDirs[srcIndex]
-            }
-
-            logger.debug('update source path to ' + capItem.sources)
+            findDefaultSources(capItem);
         }
 
         File file = new File(capItem.output);
