@@ -271,4 +271,4 @@ Recommended IDE : IntelliJ IDEA or Android Studio
 
 ## License
 
-The MIT License (MIT) Copyright (c) 2017 Bertrand Martel
+The MIT License (MIT) Copyright (c) 2017-2018 Bertrand Martel
