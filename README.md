@@ -30,11 +30,15 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.5.4'
+        classpath 'fr.bmartel:gradle-javacard:1.5.5'
     }
 }
 
 apply plugin: 'javacard'
+
+dependencies {
+    compile 'com.github.martinpaljak:globalplatformpro:18.09.14'
+}
 
 javacard {
 
@@ -129,6 +133,10 @@ task displayHelp(type: fr.bmartel.javacard.gp.GpExec) {
 
 ```groovy
 apply plugin: 'javacard'
+
+dependencies {
+    compile 'com.github.martinpaljak:globalplatformpro:18.09.14'
+}
 
 repositories {
     maven {
