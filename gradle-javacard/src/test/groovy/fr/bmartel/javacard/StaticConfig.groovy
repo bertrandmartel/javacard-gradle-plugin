@@ -32,9 +32,10 @@ package fr.bmartel.javacard
 class StaticConfig {
 
     public static String SDK_PATH = StaticConfig.getSdkPath("jc222_kit")
-    public static String DEPENDENCY_PATH = System.getProperty("user.dir") + "/../test/libs/test.jar"
-    public static String EXP_PATH = System.getProperty("user.dir") + "/../test/libs/test.exp"
-
+    /*
+    public static String DEPENDENCY_PATH = System.getProperty("user.dir") + "/../../../test/libs/test.jar"
+    public static String EXP_PATH = System.getProperty("user.dir") + "/../../../test/libs/test.exp"
+    */
     public static repositories = {
         maven {
             url 'http://dl.bintray.com/bertrandmartel/maven'
@@ -42,7 +43,7 @@ class StaticConfig {
     }
 
     public static String getSdkPath(folder) {
-        return System.getProperty("user.dir") + '/src/main/java/ant-javacard/sdks/' + folder
+        return System.getProperty("user.dir") + "/../../../sdks/" + folder
     }
 
     public static Closure VALID_CONFIG = {
@@ -59,10 +60,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -96,10 +93,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -127,10 +120,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -177,10 +166,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -229,10 +214,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -276,10 +257,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                     remote 'fr.bmartel:gplatform:2.1.1'
                 }
             }
@@ -334,10 +311,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -360,10 +333,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:03'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -382,10 +351,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
             cap {
@@ -399,10 +364,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -420,10 +381,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -442,10 +399,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -463,10 +416,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }
@@ -483,10 +432,6 @@ class StaticConfig {
                     aid '01:02:03:04:05:06:07:08:09:01:02'
                 }
                 dependencies {
-                    local {
-                        jar DEPENDENCY_PATH
-                        exps EXP_PATH
-                    }
                 }
             }
         }

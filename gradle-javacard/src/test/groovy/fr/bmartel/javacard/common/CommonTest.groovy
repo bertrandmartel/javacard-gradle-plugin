@@ -31,7 +31,7 @@ public class CommonTest {
         project.sourceSets {
             main {
                 java {
-                    srcDirs = [System.getProperty("user.dir") + "/../test/src/main/java"]
+                    srcDirs = [System.getProperty("user.dir") + "/../../../test/src/main/java"]
                 }
             }
         }

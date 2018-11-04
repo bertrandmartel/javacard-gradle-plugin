@@ -49,10 +49,6 @@ class JavaCardBuildTaskTest extends CommonTest {
                         aid '01:02:03:04:05:06:07:08:09:01:02'
                     }
                     dependencies {
-                        local {
-                            jar StaticConfig.DEPENDENCY_PATH
-                            exps StaticConfig.EXP_PATH
-                        }
                     }
                 }
             }
