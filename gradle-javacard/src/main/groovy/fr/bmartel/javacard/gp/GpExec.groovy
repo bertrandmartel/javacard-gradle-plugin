@@ -53,11 +53,8 @@ class GpExec extends JavaExec {
      * @return
      */
     def getGpClassPath(Project project) {
-
         FileCollection gproClasspath = project.files(new File(GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
-
         gproClasspath += project.sourceSets.main.runtimeClasspath
-
         return gproClasspath
     }
 }

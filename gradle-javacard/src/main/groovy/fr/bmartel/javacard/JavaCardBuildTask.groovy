@@ -52,7 +52,7 @@ class JavaCardBuildTask extends DefaultTask {
         //get location of ant-javacard task jar
         def loc = new File(pro.javacard.ant.JavaCard.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())
 
-        logger.debug('javacard task location : ' + loc)
+        logger.debug("javacard task location : ${loc}")
 
         ant.taskdef(name: 'javacard',
                 classname: 'pro.javacard.ant.JavaCard',
@@ -146,7 +146,7 @@ class JavaCardBuildTask extends DefaultTask {
         map["verify"] = capItem.verify
         map["ints"] = capItem.ints
         map["debug"] = capItem.debug
-        logger.debug("cap attributes : " + map)
+        logger.debug("cap attributes : $map")
         return map
     }
 
@@ -161,7 +161,7 @@ class JavaCardBuildTask extends DefaultTask {
         if (jckit?.trim()) {
             map["jckit"] = jckit
         }
-        logger.debug("javacard attributes : " + map)
+        logger.debug("javacard attributes : $map")
         return map
     }
 
@@ -179,7 +179,7 @@ class JavaCardBuildTask extends DefaultTask {
         if (appletItem.aid?.trim()) {
             map["aid"] = appletItem.aid
         }
-        logger.debug("applet attributes : " + map)
+        logger.debug("applet attributes : $map")
         return map
     }
 
@@ -212,7 +212,7 @@ class JavaCardBuildTask extends DefaultTask {
         if (importItem.jar?.trim()) {
             map["jar"] = importItem.jar
         }
-        logger.debug("import attributes : " + map)
+        logger.debug("import attributes : $map")
         return map
     }
 
@@ -235,11 +235,11 @@ class JavaCardBuildTask extends DefaultTask {
                 map["exps"] = jarConf[0].getParent()
                 map["jar"] = jarConf[0].getAbsolutePath()
             } else {
-                logger.error("error : exp/jar wasn't found in remote dependency : " + remote)
-                throw new InvalidDataException();
+                logger.error("error : exp/jar wasn't found in remote dependency : $remote")
+                throw new InvalidDataException()
             }
         }
-        logger.debug("import attributes : " + map)
+        logger.debug("import attributes : $map")
         return map
     }
 
@@ -248,11 +248,11 @@ class JavaCardBuildTask extends DefaultTask {
      * @param capItem
      * @return
      */
-    def findDefaultSources(capItem){
+    def findDefaultSources(capItem) {
         if (capItem.findSources) {
             def folderFound = false
             def folderIdx = 0
-            for(curSrcDir in project.sourceSets.main.java.srcDirs){
+            for (curSrcDir in project.sourceSets.main.java.srcDirs) {
                 if (curSrcDir.exists() && (capItem.defaultSources || folderIdx > 0)) {
                     folderFound = true
                     capItem.sources = curSrcDir
@@ -261,16 +261,16 @@ class JavaCardBuildTask extends DefaultTask {
                 folderIdx += 1
             }
 
-            if (!folderFound){
-                throw new InvalidUserDataException('Applet sources not found : ' + project.sourceSets.main.java.srcDirs[0])
+            if (!folderFound) {
+                throw new InvalidUserDataException("Applet sources not found : ${project.sourceSets.main.java.srcDirs[0]}")
             }
 
         } else {
-            def srcIndex = capItem.defaultSources ? 0 : project.sourceSets.main.java.srcDirs.size() - 1;
+            def srcIndex = capItem.defaultSources ? 0 : project.sourceSets.main.java.srcDirs.size() - 1
             capItem.sources = project.sourceSets.main.java.srcDirs[srcIndex]
         }
 
-        logger.debug('update source path to ' + capItem.sources)
+        logger.debug("update source path to ${capItem.sources}")
     }
 
     /**
@@ -280,44 +280,44 @@ class JavaCardBuildTask extends DefaultTask {
      */
     def updateOutputFilePath(capItem) {
         if (!capItem.sources?.trim()) {
-            findDefaultSources(capItem);
+            findDefaultSources(capItem)
         }
 
-        File file = new File(capItem.output);
+        File file = new File(capItem.output)
         if (!file.isAbsolute()) {
             Utility.createFolder(jcBuildDir)
             if (!capItem.jca?.trim()) {
-                capItem.jca = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".jca"
-                logger.debug('update jca path to ' + capItem.jca)
+                capItem.jca = "${jcBuildDir}${File.separator}${Utility.removeExtension(capItem.output)}.jca"
+                logger.debug("update jca path to $capItem.jca")
             }
             if (!capItem.export?.trim()) {
-                capItem.export = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".exp"
-                logger.debug('update export path to ' + capItem.export)
+                capItem.export = "${jcBuildDir}${File.separator}${Utility.removeExtension(capItem.output)}.exp"
+                logger.debug("update export path to $capItem.export")
             }
-            capItem.output = jcBuildDir + File.separator + capItem.output
+            capItem.output = "${jcBuildDir}${File.separator}${capItem.output}"
         } else {
             if (!capItem.jca?.trim()) {
-                capItem.jca = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".jca"
-                logger.debug('update jca path to ' + capItem.jca)
+                capItem.jca = "${jcBuildDir}${File.separator}${Utility.removeExtension(capItem.output)}.jca"
+                logger.debug("update jca path to $capItem.jca")
                 Utility.createFolder(jcBuildDir)
             }
             if (!capItem.export?.trim()) {
-                capItem.export = jcBuildDir + File.separator + Utility.removeExtension(capItem.output) + ".exp"
-                logger.debug('update export path to ' + capItem.export)
+                capItem.export = "${jcBuildDir}${File.separator}${Utility.removeExtension(capItem.output)}.exp"
+                logger.debug("update export path to $capItem.export")
                 Utility.createFolder(jcBuildDir)
             }
         }
 
         //update jca & export when non absolute path are referenced
-        File jcaFile = new File(capItem.jca);
+        File jcaFile = new File(capItem.jca)
         if (!jcaFile.isAbsolute()) {
-            capItem.jca = jcBuildDir + File.separator + capItem.jca
-            logger.debug('update jca path to ' + capItem.jca)
+            capItem.jca = "${jcBuildDir}${File.separator}${capItem.jca}"
+            logger.debug("update jca path to $capItem.jca")
         }
-        File exportFile = new File(capItem.export);
+        File exportFile = new File(capItem.export)
         if (!exportFile.isAbsolute()) {
-            capItem.export = jcBuildDir + File.separator + capItem.export
-            logger.debug('update export path to ' + capItem.export)
+            capItem.export = "${jcBuildDir}${File.separator}${capItem.export}"
+            logger.debug("update export path to $capItem.export")
         }
     }
 
