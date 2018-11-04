@@ -43,7 +43,7 @@ class StaticConfig {
     }
 
     public static String getSdkPath(folder) {
-        return System.getProperty("user.dir") + "/../../../sdks/" + folder
+        return System.getProperty("user.dir") + "/../sdks/" + folder
     }
 
     public static Closure VALID_CONFIG = {
