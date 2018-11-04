@@ -231,7 +231,7 @@ class JavaCardPlugin implements Plugin<Project> {
      */
     def createInstallTask(Project project, JavaCard extension) {
         def install = project.tasks.create(name: INSTALL_TASK, type: GpExec)
-        def args = ['-relax']
+        def args = ['--relax']
         extension.config.caps.each { capItem ->
             args.add('--delete')
             args.add(Utility.formatByteArray(capItem.aid))

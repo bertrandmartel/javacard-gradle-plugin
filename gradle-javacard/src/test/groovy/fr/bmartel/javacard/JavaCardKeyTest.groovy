@@ -16,7 +16,7 @@ class JavaCardKeyTest extends CommonTest {
         assertTrue(installTask ? true : false)
         assertTrue(installTask instanceof JavaExec)
         assertEquals('global platform', installTask.group)
-        assertEquals(['-relax',
+        assertEquals(['--relax',
                       '--delete', '010203040506070809',
                       '--install', project.buildDir.absolutePath + File.separator + "javacard" + File.separator + "applet.cap",
                       '-key-enc', '414142434445464748494A4B4C4D4E4F',
