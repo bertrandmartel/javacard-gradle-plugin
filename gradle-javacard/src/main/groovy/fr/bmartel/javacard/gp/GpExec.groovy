@@ -27,6 +27,7 @@ package fr.bmartel.javacard.gp
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.JavaExec
+import pro.javacard.gp.GPTool
 
 /**
  * Task type that inherits JavaExec.
@@ -53,7 +54,7 @@ class GpExec extends JavaExec {
      */
     def getGpClassPath(Project project) {
 
-        FileCollection gproClasspath = project.files(new File(pro.javacard.gp.GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
+        FileCollection gproClasspath = project.files(new File(GPTool.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()))
 
         gproClasspath += project.sourceSets.main.runtimeClasspath
 

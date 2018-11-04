@@ -54,20 +54,6 @@ class JavaCardPlugin implements Plugin<Project> {
 
     Task buildTask
 
-    /**
-     * dependency of Global Platform Pro
-     */
-    def depList = [
-            'net.sf.jopt-simple:jopt-simple:5.0.4',
-            'com.google.guava:guava:18.0',
-            'org.bouncycastle:bcprov-jdk15on:1.57',
-            'org.bouncycastle:bcprov-jdk14:1.50',
-            'com.googlecode.json-simple:json-simple:1.1.1',
-            'net.java.dev.jna:jna:4.2.1',
-            'org.slf4j:slf4j-simple:1.7.25',
-            'org.apache.ant:ant:1.8.2'
-    ]
-
     void apply(Project project) {
 
         //define plugin extension
@@ -171,10 +157,6 @@ class JavaCardPlugin implements Plugin<Project> {
 
     def initDependencies(Project project) {
         project.repositories.add(project.repositories.mavenCentral())
-
-        depList.each { item ->
-            project.dependencies.add("compile", item)
-        }
     }
 
     static def getDefaultJcardSim() {
