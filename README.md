@@ -30,7 +30,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'fr.bmartel:gradle-javacard:1.5.5'
+        classpath 'fr.bmartel:gradle-javacard:1.5.6'
     }
 }
 

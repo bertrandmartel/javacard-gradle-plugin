@@ -3,7 +3,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'groovy'
 
 group 'fr.bmartel'
-version '1.5.5'
+version '1.5.6'
 
 apply plugin: 'java'
 
